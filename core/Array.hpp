@@ -57,12 +57,12 @@ namespace rs::core {
 			void enlarge() {
 				out("[realloc]");
 				maximumSize *= enlargementFactor;
-				data = (T *)realloc(data, maximumSize);
+				data = (T *)realloc(data, maximumSize * sizeof(T));
 			}
 		
 			void reduce() {
 				maximumSize /= enlargementFactor;
-				data = (T *)realloc(data, maximumSize);
+				data = (T *)realloc(data, maximumSize * sizeof(T));
 			}
 	};
 	

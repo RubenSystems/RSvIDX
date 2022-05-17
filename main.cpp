@@ -7,7 +7,7 @@
 
 #include "Output.h"
 
-#include "headers/Array.hpp"
+#include "core/Array.hpp"
 
 int main(int argc, const char * argv[]) {
 	// insert code here...
