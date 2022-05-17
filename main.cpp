@@ -5,10 +5,24 @@
 //  Created by Ruben Ticehurst-James on 17/05/2022.
 //
 
-#include <iostream>
+#include "Output.h"
+
+#include "headers/Array.hpp"
 
 int main(int argc, const char * argv[]) {
 	// insert code here...
-	std::cout << "Hello, World!\n";
+	
+	rs::core::Array<int> arr;
+	
+	
+	
+	
+	for(int i = 0; i < 10; i ++) {
+		arr.add(i);
+		out(arr[i]);
+		
+	}
+	
+	
 	return 0;
 }
