@@ -9,24 +9,20 @@
 
 #include "core/Array.hpp"
 
+#include "headers/Math.hpp"
+
 int main(int argc, const char * argv[]) {
 	
-	rs::core::Array<int> arr;
 	
+	float * data = new float [5 * 5];
 	
-	
-	
-	for(int i = 0; i < 10; i ++) {
-		arr.add(i + 16);
-		
-		
+	for (int i = 0; i < 5 * 5; i ++) {
+		data[i] = i;
 	}
 	
-	for(int i = 0; i < 10; i ++) {
-		out(arr[i]);
-		
-		
-	}
+	rs::math::Matrix mat(5, 5, data);
+
+	out(mat.get(0, 2));
 	
 	return 0;
 }

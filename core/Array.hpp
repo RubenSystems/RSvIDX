@@ -25,6 +25,10 @@ namespace rs::core {
 			Array(int initialSize = 2) : maximumSize (initialSize), currentPosition(0) {
 				data = (T *)calloc(initialSize, sizeof(T));
 			}
+		
+			~Array() {
+				delete[] data;
+			}
 			
 			T & operator[](int index) {
 				return data[index];
