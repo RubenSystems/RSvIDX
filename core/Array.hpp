@@ -12,6 +12,8 @@
 #include "../Output.h"
 
 
+// TODO: - Check allocations for errors
+
 namespace rs::core {
 	
 	template<class T>
@@ -21,7 +23,7 @@ namespace rs::core {
 		public:
 		
 			Array(int initialSize = 2) : maximumSize (initialSize), currentPosition(0) {
-				data = (T *)malloc(sizeof(T) * initialSize);
+				data = (T *)calloc(initialSize, sizeof(T));
 			}
 			
 			T & operator[](int index) {
@@ -31,20 +33,20 @@ namespace rs::core {
 			void add(const T & value) {
 				//Enlarge here
 				
-				if (currentPosition > maximumSize) {
+				data[currentPosition++] = value;
+				if (currentPosition >= maximumSize) {
 					enlarge();
 				}
-				data[currentPosition++] = value;
 				
 			}
 			
 			void remove() {
-				currentPosition --;
-				//Reduce here
+				data[currentPosition--].~T();
+				
 			}
 			
 			int size() {
-				return currentPosition;
+				return (int)currentPosition;
 			}
 		
 		private:
@@ -55,14 +57,17 @@ namespace rs::core {
 			const static int enlargementFactor = 2;
 		
 			void enlarge() {
-				out("[realloc]");
 				maximumSize *= enlargementFactor;
-				data = (T *)realloc(data, maximumSize * sizeof(T));
+				resize(maximumSize);
 			}
 		
 			void reduce() {
 				maximumSize /= enlargementFactor;
-				data = (T *)realloc(data, maximumSize * sizeof(T));
+				resize(maximumSize);
+			}
+		
+			void resize(int newSize) {
+				data = (T *)realloc(data, newSize * sizeof(T));
 			}
 	};
 	
