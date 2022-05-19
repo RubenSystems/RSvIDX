@@ -13,6 +13,7 @@
 
 
 // TODO: - Check allocations for errors
+// TODO: - Add shrinking
 
 namespace rs::core {
 	
@@ -20,10 +21,10 @@ namespace rs::core {
 	class Array {
 		
 		
-		public:
-		
-			Array(int initialSize = 2) : maximumSize (initialSize), currentPosition(0) {
-				data = (T *)calloc(initialSize, sizeof(T));
+	public:
+			
+			Array(int initialSize = 2, bool resizable = true) : maximumSize (initialSize), currentPosition(0), resizable(resizable) {
+				data = new T[initialSize];
 			}
 		
 			~Array() {
@@ -36,7 +37,10 @@ namespace rs::core {
 				
 			void add(const T & value) {
 				//Enlarge here
-				
+				if (currentPosition + 1 >= maximumSize && resizable == false) {
+					throw std::runtime_error("[error] - cannot insert into a full non-resizable array");
+				}
+				out(maximumSize);
 				data[currentPosition++] = value;
 				if (currentPosition >= maximumSize) {
 					enlarge();
@@ -46,21 +50,28 @@ namespace rs::core {
 			
 			void remove() {
 				data[currentPosition--].~T();
-				
 			}
 			
 			int size() {
-				return (int)currentPosition;
+				return currentPosition;
 			}
+		
+			int containerSize() {
+				return maximumSize;
+			}
+		
+			
 		
 		private:
 			int maximumSize;
 			int currentPosition;
+			bool resizable;
 			T * data;
 			
 			const static int enlargementFactor = 2;
 		
 			void enlarge() {
+				
 				maximumSize *= enlargementFactor;
 				resize(maximumSize);
 			}
@@ -70,9 +81,16 @@ namespace rs::core {
 				resize(maximumSize);
 			}
 		
-			void resize(int newSize) {
-				data = (T *)realloc(data, newSize * sizeof(T));
+			void resize(int newSize = 2) {
+				//				There is a *new* kid on the block
+				//				data = (T *)realloc(data, newSize * sizeof(T));
+				T* newData = new T[newSize];
+				memmove(newData, data, currentPosition);
+				delete [] data;
+				data = newData;
 			}
+		
+
 	};
 	
 };
