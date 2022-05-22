@@ -71,6 +71,31 @@ namespace rs::math {
 		 */
 	}
 	
+	void generateProjections(Matrix & fill) {
+		std::vector<std::future<Random::r_type>> futures;
+		int totalSize = fill.size().rows * fill.size().columns;
+		futures.resize(totalSize);
+		for (int i = 0; i < totalSize; i ++) {
+			futures[i] = std::async(std::launch::async, []() {return Random::shared.generate();});
+		}
+		
+		for(unsigned int i = 0; i < totalSize; i++) {
+			fill[i] = futures[i].get();
+		}
+			
+	}
+	
+	//MARK: -RANDOM
+	Random Random::shared = Random();
+	
+	Random::Random() {
+		this->distribution = std::uniform_real_distribution<r_type>(-1, 1);
+	}
+	
+	Random::r_type Random::generate() {
+		return this->distribution(generator);
+	}
+	
 	// MARK: -MATRIX imp
 	Matrix::Matrix(unsigned int n_rows, unsigned int n_columns, m_val * n_data) : rows(n_rows), columns(n_columns) {
 		data = new m_val[n_rows * n_columns];
@@ -81,6 +106,14 @@ namespace rs::math {
 	
 	Matrix::m_val Matrix::get(unsigned int row, unsigned int column) const {
 		return this->data[column + (row * this->columns)];
+	}
+	
+	Matrix::m_val & Matrix::operator[](unsigned int index) {
+		return this->data[index];
+	}
+	
+	Matrix::m_val & Matrix::mutate(unsigned int row, unsigned int column) {
+		return this->operator[](column + (row * this->columns));
 	}
 	
 	Matrix::Size Matrix::size() const {
@@ -112,6 +145,8 @@ namespace rs::math {
 	unsigned int Vector::size() const {
 		return this->d_size;
 	}
+	
+	
 	
 	LSH_INDEXING_TYPE hash(Matrix * planes, Vector * vector) {
 		LSH_INDEXING_TYPE hash = 0;

@@ -11,35 +11,23 @@
 
 #include "Output.h"
 
-#include "core/HashArray.h"
-
-#include "headers/Math.hpp"
+#include "Permanent.hpp"
 
 using namespace std::chrono;
 
 int main(int argc, const char * argv[]) {
-
-
-//	rs::core::Array<int> x (10);
 	
-//	for(int i = 0; i <= 100; i++){
-//		x.add(i);
+	int * values = new int [100];
+	memset(values, 0, sizeof(int) * 100);
+//	for(int i = 0; i < 100; i ++) {
+//		values[i] = i;
 //	}
+//	rs::rsvidx::Permanent::shared.write("values.rsdata", values, 100 * sizeof(int), 0);
 	
-//	std::fstream file;
-//	uint64_t myuint = 0xFFFF;
-//	file.open("test.rsdata", std::ios::out | std::ios::binary);
-//	file.write(reinterpret_cast<char*>(&myuint), sizeof(myuint)); // ideally, you should memcpy it to a char buffer.
-//	file.close();
-//
-//	std::fstream fil;
-//	uint64_t newuint;
-//
-//	fil.open("test.rsdata", std::ios::in | std::ios::binary);
-//	fil.read(reinterpret_cast<char*>(&newuint), sizeof(uint64_t));
-//	fil.close();
-//
-//	out(newuint);
+	rs::rsvidx::Permanent::shared.read("values.rsdata", values, 10 * sizeof(int), 10 * sizeof(int));
+	for(int i = 0; i < 100; i ++){
+		out(values[i]);
+	}
 	
 	return 0;
 }

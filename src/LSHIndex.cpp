@@ -11,9 +11,9 @@
 using namespace rs::rsvidx;
 
 
-LSHIndex::LSHIndex(int numberOfTables, int hashSize):
+LSHIndex::LSHIndex(int numberOfTables, int hashSize, std::string filename):
 	numberOfTables(numberOfTables), hashSize(hashSize) {
 		
-		tables = new rs::core::HashArray<char[10]>[numberOfTables];
+	tables = new rs::core::HashArray<id_type>[numberOfTables];
 	
 }

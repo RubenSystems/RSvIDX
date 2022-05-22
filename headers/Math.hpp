@@ -11,11 +11,31 @@
 
 
 #include <stdio.h>
+#include <random>
 
 #include "../config.h"
 
 namespace rs::math {
 	int power(int, int);
+	
+	class Random {
+		public:
+			typedef float r_type;
+		
+			static Random shared;
+			
+			Random ();
+		
+			r_type generate() ;
+		
+		private:
+			std::default_random_engine generator;
+			std::uniform_real_distribution<r_type> distribution;
+			
+		
+			
+			
+	};
 	
 	class Matrix {
 		
@@ -26,7 +46,11 @@ namespace rs::math {
 			Matrix(unsigned int n_rows, unsigned int n_columns, m_val * n_data);
 		
 			~Matrix();
+		
+			m_val & operator[](unsigned int index) ;
 			
+			m_val & mutate(unsigned int row, unsigned int column);
+		
 			m_val get(unsigned int row, unsigned int column) const;
 		
 			struct Size {
@@ -70,6 +94,8 @@ namespace rs::math {
 	void dot(Matrix *, Vector *, Vector &);
 	
 	Vector::v_val cosineSimilarity(Vector *, Vector * );
+	
+	void generateProjections(Matrix &);
 	
 	LSH_INDEXING_TYPE hash(Matrix *, Vector *);
 	
