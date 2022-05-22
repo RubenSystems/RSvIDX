@@ -9,22 +9,18 @@
 #define HashArray_h
 
 #include "Array.h"
+#include "../config.h"
 
 namespace rs::core {
 	
 	template <class T>
 	class HashArray : public Array<Array<T>> {
 		public:
-			HashArray(int size) : Array<Array<T>>(size, false) {}
+			HashArray(int size = sizeof(LSH_INDEXING_TYPE) << 2) : Array<Array<T>>(size, false) {}
 		
 		
 			void add(int hash, const T & value) {
 				Array<T> & array = this->operator[](hash);
-				
-				
-				if (array.containerSize() == 0) {
-				}
-				out(array.containerSize());
 				array.add(value);
 			}
 	};

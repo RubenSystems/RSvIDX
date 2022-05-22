@@ -82,15 +82,18 @@ namespace rs::core {
 			}
 		
 			void resize(int newSize = 2) {
-				//				There is a *new* kid on the block
-				//				data = (T *)realloc(data, newSize * sizeof(T));
+				/*
+				 
+				 There is a *new* kid on the block
+				 
+				*/
+				//data = (T *)realloc(data, newSize * sizeof(T));
+				
 				T* newData = new T[newSize];
 				memmove(newData, data, currentPosition);
 				delete [] data;
 				data = newData;
 			}
-		
-
 	};
 	
 };
