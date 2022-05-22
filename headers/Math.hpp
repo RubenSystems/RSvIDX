@@ -69,10 +69,8 @@ namespace rs::math {
 	
 	void dot(Matrix *, Vector *, Vector &);
 	
-	/*
-	 First Matrix: Matrix to hash
-	 Second Matrix: Planes to hash with
-	 */
+	Vector::v_val cosineSimilarity(Vector *, Vector * );
+	
 	LSH_INDEXING_TYPE hash(Matrix *, Vector *);
 	
 	

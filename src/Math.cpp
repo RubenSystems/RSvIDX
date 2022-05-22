@@ -47,8 +47,28 @@ namespace rs::math {
 			Vector::v_val value = futures[(int)i].get();
 			result[i] = value;
 		}
-
-
+	}
+	
+	Vector::v_val cosineSimilarity(Vector * a, Vector * b) {
+		double dot = 0.0, denom_a = 0.0, denom_b = 0.0 ;
+		for(unsigned int i = 0; i < a->size(); i++) {
+			dot += a->get(i) * b->get(i) ;
+			denom_a += a->get(i) * a->get(i);
+			denom_b += b->get(i) * b->get(i);
+		}
+		return dot / (sqrt(denom_a) * sqrt(denom_b)) ;
+		/*
+		 old
+		 std::vector<double> A = a[0], B = b[0];
+					 double dot = 0.0, denom_a = 0.0, denom_b = 0.0 ;
+					 for(unsigned int i = 0u; i < A.size(); ++i) {
+						 dot += A[i] * B[i] ;
+						 denom_a += A[i] * A[i] ;
+						 denom_b += B[i] * B[i] ;
+					 }
+					 return dot / (sqrt(denom_a) * sqrt(denom_b)) ;
+		 
+		 */
 	}
 	
 	// MARK: -MATRIX imp
