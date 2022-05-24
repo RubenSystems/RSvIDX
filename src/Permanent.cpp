@@ -7,27 +7,30 @@
 
 #include "Permanent.hpp"
 
-#include <fstream>
+
 
 namespace rs::rsvidx {
 	Permanent::Permanent() {}
 
 	const Permanent Permanent::shared = Permanent();
 
-	void Permanent:: read(std::string filename, void * data, int size, int offset) const {
+	void Permanent::filescope(std::function<void (std::fstream &)> action) const {
 		std::fstream file;
-	
-		file.open("test.rsdata", std::ios::in | std::ios::binary);
-		file.seekg(offset);
-		file.read(reinterpret_cast<char*>(data), size);
+		action(file);
 		file.close();
 	}
+	
+	void Permanent::read(std::fstream & file, void * data, int size, int offset) const {
+	
+		//file.open(filename, std::ios::in | std::ios::binary);
+		file.seekg(offset);
+		file.read(reinterpret_cast<char*>(data), size);
+	}
 
-	void Permanent::write(std::string filename, void * data, int size, int offset) const {
-		std::fstream file;
-		file.open("test.rsdata", std::ios::out | std::ios::binary);
+	void Permanent::write(std::fstream & file, void * data, int size, int offset) const {
+		
+		//file.open(filename, writetype == append ?  std::ios::app | std::ios::binary : std::ios::binary);
 		file.seekg(offset);
 		file.write(reinterpret_cast<char*>(data), size);
-		file.close();
 	}
 }

@@ -40,7 +40,6 @@ namespace rs::core {
 				if (currentPosition + 1 >= maximumSize && resizable == false) {
 					throw std::runtime_error("[error] - cannot insert into a full non-resizable array");
 				}
-				out(maximumSize);
 				data[currentPosition++] = value;
 				if (currentPosition >= maximumSize) {
 					enlarge();
@@ -62,7 +61,7 @@ namespace rs::core {
 		
 			
 		
-		private:
+		protected:
 			int maximumSize;
 			int currentPosition;
 			bool resizable;
@@ -90,7 +89,7 @@ namespace rs::core {
 				//data = (T *)realloc(data, newSize * sizeof(T));
 				
 				T* newData = new T[newSize];
-				memmove(newData, data, currentPosition);
+				memmove(newData, data, currentPosition * sizeof(T));
 				delete [] data;
 				data = newData;
 			}
