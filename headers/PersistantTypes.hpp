@@ -16,10 +16,9 @@ namespace rs::rsvidx {
 	template <class T>
 	class PersistantArray : public core::Array<T> {
 		public:
-			PersistantArray(std::string filename, int initialSize = 2, bool resizable = true) : filename(filename + ".rsarray"), core::Array<T>(initialSize, resizable) {
-				
-			}
-			
+			PersistantArray(std::string filename, int initialSize = 2, bool resizable = true) :
+				filename(filename + ".rsarray"), loaded(false), core::Array<T>(initialSize, resizable) { }
+		
 			void save(){
 				StateMap state = {this->currentPosition, this->maximumSize, this->resizable};
 				
@@ -34,6 +33,7 @@ namespace rs::rsvidx {
 			}
 		
 			void load() {
+				loaded = true;
 				StateMap state;
 				
 				std::fstream file;
@@ -54,6 +54,8 @@ namespace rs::rsvidx {
 			
 		private:
 			std::string filename;
+		
+			bool loaded;
 		
 			struct StateMap {
 				int currentPosition;
