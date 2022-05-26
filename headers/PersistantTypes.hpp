@@ -9,60 +9,104 @@
 #define PersistantTypes_hpp
 
 #include <stdio.h>
-#include <fstream>
+//#include <fstream>
+#include "StandardDiskOperator.hpp"
 #include "../core/Array.h"
 
+#include "../Output.h"
+
 namespace rs::rsvidx {
+	
 	template <class T>
 	class PersistantArray : public core::Array<T> {
 		public:
-			PersistantArray(std::string filename, int initialSize = 2, bool resizable = true) :
-				filename(filename + ".rsarray"), loaded(false), core::Array<T>(initialSize, resizable) { }
+			PersistantArray(std::string filename) : filename(), core::Array<T>(2, true) {
+				filename = std::string(filename + ".rsarray").c_str();
+			}
 		
 			void save(){
 				StateMap state = {this->currentPosition, this->maximumSize, this->resizable};
 				
-				std::fstream file;
-				file.open(filename, std::ios::out | std::ios::binary);
-				file.seekg(0);
-				file.write(reinterpret_cast<char*>(&state), sizeof(StateMap));
-				file.seekg(sizeof(StateMap));
-				file.write(reinterpret_cast<char*>(this->data), this->currentPosition * sizeof(T));
+				StandardDiskOperator file = StandardDiskOperator();
+				file.open(filename, DiskOperator::OpenType::WRITE);
+				file.seek(0);
+				file.write(&state, sizeof(StateMap));
+				file.seek(sizeof(StateMap));
+				file.write(this->data, this->currentPosition * sizeof(T));
 				file.close();
+
 				
 			}
 		
 			void load() {
-				loaded = true;
 				StateMap state;
+
+				StandardDiskOperator file = StandardDiskOperator();
+				file.open(filename, DiskOperator::OpenType::READ);
+				file.seek(0);
+				file.read(&state, sizeof(StateMap));
 				
-				std::fstream file;
-				file.open(filename, std::ios::in | std::ios::binary);
-				file.seekg(0);
-				file.read(reinterpret_cast<char*>(&state), sizeof(StateMap));
 				this->resize(state.maximumSize);
 				this->currentPosition = state.currentPosition;
 				this->maximumSize = state.maximumSize;
 				this->resizable = state.resizable;
 				
-				file.seekg(sizeof(StateMap));
-				file.read(reinterpret_cast<char*>(this->data), state.currentPosition * sizeof(T));
+				file.seek(sizeof(StateMap));
+				file.read(this->data, state.currentPosition * sizeof(T));
 				file.close();
-				
+
 			}
 		
 			
 		private:
-			std::string filename;
-		
-			bool loaded;
-		
+			const char * filename;
+				
 			struct StateMap {
 				int currentPosition;
 				int maximumSize;
 				bool resizable;
 			};
 	};
+	
+	template <class T>
+	class PersistantMultimap {
+		public:
+			PersistantMultimap(std::string n_foldername, int n_size): foldername(n_foldername), size((n_size * 8) << 2) {
+				out(sizeof(PersistantArray<T> *) * this->size);
+				buckets = new PersistantArray<T> * [this->size];
+				memset(buckets, 0, sizeof(PersistantArray<T>) * (this->size));
+			}
+		
+			~PersistantMultimap() {
+				for(int i = 0; i < size; i++){
+					if (buckets[i]){
+						buckets[i]->save();
+						delete buckets[i];
+					}
+				}
+				delete[] buckets;
+			}
+			
+			void add(unsigned int index, const T & data) {
+				PersistantArray<T> * bucket;
+				if (buckets[index] == 0) {
+					out(sizeof(PersistantArray<T>));
+					std::string path = foldername + std::to_string(index);
+					bucket = new PersistantArray<T>(path);
+					buckets[index] = bucket;
+				} else {
+					bucket = buckets[index];
+				}
+				bucket->add(data);
+				
+			}
+			
+		private:
+			int size;
+			std::string foldername;
+			PersistantArray<T> ** buckets;
+	};
+	
 }
 
 #endif /* PersistantTypes_hpp */

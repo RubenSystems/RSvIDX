@@ -24,7 +24,9 @@ namespace rs::core {
 	public:
 			
 			Array(int initialSize = 2, bool resizable = true) : maximumSize (initialSize), currentPosition(0), resizable(resizable) {
+
 				data = new T[initialSize];
+
 			}
 		
 			~Array() {
