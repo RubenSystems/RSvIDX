@@ -20,15 +20,14 @@ namespace rs::rsvidx {
 	template <class T>
 	class PersistantArray : public core::Array<T> {
 		public:
-			PersistantArray(std::string filename) : filename(), core::Array<T>(2, true) {
-				filename = std::string(filename + ".rsarray").c_str();
+			PersistantArray(std::string n_filename) : filename(std::string(n_filename + ".rsarray")),  core::Array<T>(2, true) {
 			}
 		
 			void save(){
 				StateMap state = {this->currentPosition, this->maximumSize, this->resizable};
 				
 				StandardDiskOperator file = StandardDiskOperator();
-				file.open(filename, DiskOperator::OpenType::WRITE);
+				file.open(filename.c_str(), DiskOperator::OpenType::WRITE);
 				file.seek(0);
 				file.write(&state, sizeof(StateMap));
 				file.seek(sizeof(StateMap));
@@ -42,7 +41,7 @@ namespace rs::rsvidx {
 				StateMap state;
 
 				StandardDiskOperator file = StandardDiskOperator();
-				file.open(filename, DiskOperator::OpenType::READ);
+				file.open(filename.c_str(), DiskOperator::OpenType::READ);
 				file.seek(0);
 				file.read(&state, sizeof(StateMap));
 				
@@ -59,7 +58,7 @@ namespace rs::rsvidx {
 		
 			
 		private:
-			const char * filename;
+			std::string filename;
 				
 			struct StateMap {
 				int currentPosition;
@@ -72,14 +71,14 @@ namespace rs::rsvidx {
 	class PersistantMultimap {
 		public:
 			PersistantMultimap(std::string n_foldername, int n_size): foldername(n_foldername), size((n_size * 8) << 2) {
-				out(sizeof(PersistantArray<T> *) * this->size);
-				buckets = new PersistantArray<T> * [this->size];
-				memset(buckets, 0, sizeof(PersistantArray<T>) * (this->size));
+				buckets = new PersistantArray<T>* [this->size];
+				memset(buckets, 0, sizeof(PersistantArray<T> *) * (this->size));
 			}
 		
 			~PersistantMultimap() {
+				
 				for(int i = 0; i < size; i++){
-					if (buckets[i]){
+					if (buckets[i] != NULL){
 						buckets[i]->save();
 						delete buckets[i];
 					}
@@ -90,7 +89,6 @@ namespace rs::rsvidx {
 			void add(unsigned int index, const T & data) {
 				PersistantArray<T> * bucket;
 				if (buckets[index] == 0) {
-					out(sizeof(PersistantArray<T>));
 					std::string path = foldername + std::to_string(index);
 					bucket = new PersistantArray<T>(path);
 					buckets[index] = bucket;

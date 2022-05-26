@@ -7,34 +7,30 @@
 
 #include "StandardDiskOperator.hpp"
 #include <fstream>
+#include "../Output.h"
 
 namespace rs::rsvidx {
 	void StandardDiskOperator::open(const char * filename, OpenType type){
-		this->file = new std::fstream;
-		((std::fstream *)file)->open(filename, (type == READ ? std::ios::in : std::ios::out) | std::ios::binary);
+		file = new std::fstream;
+		((std::fstream*)file)->open(filename, (type == READ ? std::ios::in : std::ios::out) | std::ios::binary);
+		out(filename);
 	}
 	
 	void StandardDiskOperator::write(void * data, int size) {
-		if (((std::fstream *)file)->is_open() && !((std::fstream *)file)->write(reinterpret_cast<char *>(data), size)) {
-			throw std::runtime_error("[WRITE] - write error");
-		}
+		((std::fstream*)file)->write(reinterpret_cast<char *>(data), size);
+
 	}
 	
 	void StandardDiskOperator::read(void * data, int size) {
-		if (((std::fstream *)file)->is_open() && !((std::fstream *)file)->read(reinterpret_cast<char *>(data), size)) {
-			throw std::runtime_error("[READ] - read error");
-		}
+		((std::fstream*)file)->read(reinterpret_cast<char *>(data), size);
+
 	}
 	
 	void StandardDiskOperator::seek(int distance) {
-		if (((std::fstream *)file)->is_open()) {
-			((std::fstream *)file)->seekg(distance);
-		}
+		((std::fstream*)file)->seekg(distance);
 	}
 	
 	void StandardDiskOperator::close() {
-		if(((std::fstream *)file)->is_open()) {
-			((std::fstream *)file)->close();
-		}
+		((std::fstream*)file)->close();
 	}
 }

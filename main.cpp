@@ -16,11 +16,15 @@
 
 using namespace std::chrono;
 
-int main(int argc, const char * argv[]) {
 
+
+int main(int argc, const char * argv[]) {
+		
+//	rs::rsvidx::PersistantArray<int> x ("test");
 	rs::rsvidx::PersistantMultimap<int> x ("test/", sizeof(LSH_INDEXING_TYPE));
 	
 	x.add(1, 23);
+	
 	
 	
 	return 0;

@@ -12,7 +12,6 @@
 #include "DiskOperator.h"
 
 
-
 namespace rs::rsvidx {
 	class StandardDiskOperator: public DiskOperator {
 		
@@ -29,7 +28,6 @@ namespace rs::rsvidx {
 			void close();
 		
 		private:
-			//inelegent
 			void * file;
 	};
 }
