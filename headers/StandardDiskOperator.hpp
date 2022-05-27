@@ -29,6 +29,8 @@ namespace rs::rsvidx {
 		
 		private:
 			void * file;
+		
+			void createDirectory(const char *) ;
 	};
 }
 

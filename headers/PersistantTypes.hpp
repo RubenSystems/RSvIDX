@@ -87,22 +87,36 @@ namespace rs::rsvidx {
 			}
 			
 			void add(unsigned int index, const T & data) {
-				PersistantArray<T> * bucket;
-				if (buckets[index] == 0) {
-					std::string path = foldername + std::to_string(index);
-					bucket = new PersistantArray<T>(path);
-					buckets[index] = bucket;
-				} else {
-					bucket = buckets[index];
-				}
+				loadBucket(index);
+				PersistantArray<T> * bucket = buckets[index];
 				bucket->add(data);
 				
 			}
+		
+			//This may look bad but it gets cleaned up later
+			PersistantArray<T> * get(unsigned int index) {
+				loadBucket(index);
+				return buckets[index];
+			}
+			
 			
 		private:
 			int size;
 			std::string foldername;
 			PersistantArray<T> ** buckets;
+		
+			/*
+			 Performs cache op too so watch out
+			 */
+			void loadBucket(unsigned int index) {
+				PersistantArray<T> * bucket;
+				if (buckets[index] == 0) {
+					std::string path = foldername + std::to_string(index);
+					bucket = new PersistantArray<T>(path);
+					bucket->load();
+					buckets[index] = bucket;
+				}
+			}
 	};
 	
 }
