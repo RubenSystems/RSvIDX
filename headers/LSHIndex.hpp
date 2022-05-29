@@ -10,7 +10,7 @@
 
 #define LSH_INDEXING_TYPE char
 
-#include "../core/HashArray.h"
+#include "LSHTable.hpp"
 #include "Math.hpp"
 #include <stdio.h>
 #include <string>
@@ -20,20 +20,18 @@ namespace rs::rsvidx {
 		
 		
 		public :
-			typedef char id_type[10];
 		
 			LSHIndex(int numberOfTables, int hashSize, std::string filename);
 				
-			void add(const math::Vector &, id_type);
+			void add(const math::Vector &, LSH_ID_TYPE);
 		
-			core::Array<id_type> get(const math::Vector &);
+			core::Array<LSH_ID_TYPE> get(const math::Vector &);
 		
-			void remove(const math::Vector &, id_type);
+			void remove(const math::Vector &, LSH_ID_TYPE);
 			
 		private:
 		int numberOfTables, hashSize, dimensions;
-		rs::core::HashArray<id_type> * tables;
-//		math::Matrix projections;
+		LSHTable * tables;
 	};
 }
 

@@ -28,7 +28,7 @@ namespace rs::math {
 		
 			r_type generate() ;
 		
-		private:
+		protected:
 			std::default_random_engine generator;
 			std::uniform_real_distribution<r_type> distribution;
 			
@@ -43,6 +43,8 @@ namespace rs::math {
 		public:
 			typedef float m_val;
 		
+			Matrix(unsigned int n_rows, unsigned int n_columns);
+			
 			Matrix(unsigned int n_rows, unsigned int n_columns, m_val * n_data);
 		
 			~Matrix();
@@ -59,7 +61,7 @@ namespace rs::math {
 		
 			Size size() const;
 		
-		private:
+		protected:
 			m_val * data;
 			unsigned int rows, columns;
 		

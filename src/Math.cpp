@@ -102,6 +102,10 @@ namespace rs::math {
 		memmove(data, n_data, n_rows * n_columns * sizeof(m_val));
 	}
 	
+	Matrix::Matrix(unsigned int n_rows, unsigned int n_columns) : rows(n_rows), columns(n_columns) {
+		data = new m_val[n_rows * n_columns];
+	}
+	
 	Matrix::~Matrix(){ delete [] this->data; }
 	
 	Matrix::m_val Matrix::get(unsigned int row, unsigned int column) const {

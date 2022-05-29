@@ -10,4 +10,21 @@
 
 #define LSH_INDEXING_TYPE char
 
+struct ID {
+	ID () {}
+	
+	ID (const std::string & string) {
+		const char * newData = string.c_str();
+		memmove(data, newData, 10);
+	}
+	
+	ID(const ID & copy) {
+		memcpy(data, copy.data, 10);
+	}
+	
+	char data[10];
+};
+
+#define LSH_ID_TYPE ID
+
 #endif /* config_h */

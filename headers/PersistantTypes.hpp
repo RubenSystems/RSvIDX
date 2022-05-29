@@ -12,6 +12,7 @@
 //#include <fstream>
 #include "StandardDiskOperator.hpp"
 #include "../core/Array.h"
+#include "Math.hpp"
 
 #include "../Output.h"
 
@@ -20,14 +21,14 @@ namespace rs::rsvidx {
 	template <class T>
 	class PersistantArray : public core::Array<T> {
 		public:
-			PersistantArray(std::string n_filename) : filename(std::string(n_filename + ".rsarray")),  core::Array<T>(2, true) {
+			PersistantArray() : core::Array<T>(2, true) {
 			}
 		
-			void save(){
+			void save(const std::string & filename){
 				StateMap state = {this->currentPosition, this->maximumSize, this->resizable};
 				
 				StandardDiskOperator file = StandardDiskOperator();
-				file.open(filename.c_str(), DiskOperator::OpenType::WRITE);
+				file.open((filename + ".rsarray").c_str(), DiskOperator::OpenType::WRITE);
 				file.seek(0);
 				file.write(&state, sizeof(StateMap));
 				file.seek(sizeof(StateMap));
@@ -37,11 +38,11 @@ namespace rs::rsvidx {
 				
 			}
 		
-			void load() {
+			void load(const std::string & filename) {
 				StateMap state;
 
 				StandardDiskOperator file = StandardDiskOperator();
-				file.open(filename.c_str(), DiskOperator::OpenType::READ);
+				file.open((filename + ".rsarray").c_str(), DiskOperator::OpenType::READ);
 				file.seek(0);
 				file.read(&state, sizeof(StateMap));
 				
@@ -58,7 +59,6 @@ namespace rs::rsvidx {
 		
 			
 		private:
-			std::string filename;
 				
 			struct StateMap {
 				int currentPosition;
@@ -70,7 +70,8 @@ namespace rs::rsvidx {
 	template <class T>
 	class PersistantMultimap {
 		public:
-			PersistantMultimap(std::string n_foldername, int n_size): foldername(n_foldername), size((n_size * 8) << 2) {
+		
+			PersistantMultimap(int n_size): size((n_size * 8) << 2) {
 				buckets = new PersistantArray<T>* [this->size];
 				memset(buckets, 0, sizeof(PersistantArray<T> *) * (this->size));
 			}
@@ -79,7 +80,10 @@ namespace rs::rsvidx {
 				
 				for(int i = 0; i < size; i++){
 					if (buckets[i] != NULL){
-						buckets[i]->save();
+						if (foldername != "") {
+							buckets[i]->save(foldername + std::to_string(i));
+						}
+						
 						delete buckets[i];
 					}
 				}
@@ -94,28 +98,61 @@ namespace rs::rsvidx {
 			}
 		
 			//This may look bad but it gets cleaned up later
-			PersistantArray<T> * get(unsigned int index) {
+			core::Array<T> * get(unsigned int index) {
 				loadBucket(index);
 				return buckets[index];
 			}
+		
+			void setFoldername(const std::string & foldername) {
+				this->foldername = foldername;
+			}
 			
+		protected:
+			std::string foldername = "";
 			
 		private:
 			int size;
-			std::string foldername;
 			PersistantArray<T> ** buckets;
+			
 		
 			/*
 			 Performs cache op too so watch out
 			 */
 			void loadBucket(unsigned int index) {
+				if (foldername == "") {
+					throw std::runtime_error("[SAVE] - must specify a foldername in order to save/load");
+				}
+				
 				PersistantArray<T> * bucket;
 				if (buckets[index] == 0) {
 					std::string path = foldername + std::to_string(index);
-					bucket = new PersistantArray<T>(path);
-					bucket->load();
+					bucket = new PersistantArray<T>();
+					bucket->load(path);
 					buckets[index] = bucket;
 				}
+			}
+	};
+	
+	class PersistantMatrix : public rs::math::Matrix {
+		public :
+			PersistantMatrix(unsigned int n_rows, unsigned int n_columns) : rs::math::Matrix(n_rows, n_columns) {}
+		
+			void load(const std::string & filename) {
+				StandardDiskOperator file = StandardDiskOperator();
+				
+				file.open((filename + ".rsmatrix").c_str(), DiskOperator::OpenType::READ);
+				file.seek(0);
+				file.read(&data, sizeof(m_val) * rows * columns);
+				file.close();
+			}
+			
+			void save(const std::string & filename) {
+				StandardDiskOperator file = StandardDiskOperator();
+				
+				file.open((filename + ".rsmatrix").c_str(), DiskOperator::OpenType::WRITE);
+				file.seek(0);
+				file.write(&data, sizeof(m_val) * rows * columns);
+				file.close();
 			}
 	};
 	
