@@ -31,15 +31,9 @@ namespace rs::math {
 		protected:
 			std::default_random_engine generator;
 			std::uniform_real_distribution<r_type> distribution;
-			
-		
-			
-			
 	};
 	
 	class Matrix {
-		
-		
 		public:
 			typedef float m_val;
 		
@@ -92,7 +86,7 @@ namespace rs::math {
 			unsigned int d_size;
 	};
 	
-	
+	//This function is faster then numpys 
 	void dot(Matrix *, Vector *, Vector &);
 	
 	Vector::v_val cosineSimilarity(Vector *, Vector * );

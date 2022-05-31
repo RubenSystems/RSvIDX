@@ -103,7 +103,7 @@ namespace rs::rsvidx {
 				return buckets[index];
 			}
 		
-			void setFoldername(const std::string & foldername) {
+			virtual void setFoldername(const std::string & foldername) {
 				this->foldername = foldername;
 			}
 			
@@ -124,6 +124,7 @@ namespace rs::rsvidx {
 				}
 				
 				PersistantArray<T> * bucket;
+				
 				if (buckets[index] == 0) {
 					std::string path = foldername + std::to_string(index);
 					bucket = new PersistantArray<T>();
@@ -135,14 +136,16 @@ namespace rs::rsvidx {
 	
 	class PersistantMatrix : public rs::math::Matrix {
 		public :
-			PersistantMatrix(unsigned int n_rows, unsigned int n_columns) : rs::math::Matrix(n_rows, n_columns) {}
+			PersistantMatrix(unsigned int n_rows, unsigned int n_columns) : rs::math::Matrix(n_rows, n_columns) {
+				memset(data, 0, sizeof(m_val) * n_rows * n_columns);
+			}
 		
 			void load(const std::string & filename) {
 				StandardDiskOperator file = StandardDiskOperator();
 				
 				file.open((filename + ".rsmatrix").c_str(), DiskOperator::OpenType::READ);
 				file.seek(0);
-				file.read(&data, sizeof(m_val) * rows * columns);
+				file.read(data, sizeof(m_val) * rows * columns);
 				file.close();
 			}
 			
@@ -151,9 +154,10 @@ namespace rs::rsvidx {
 				
 				file.open((filename + ".rsmatrix").c_str(), DiskOperator::OpenType::WRITE);
 				file.seek(0);
-				file.write(&data, sizeof(m_val) * rows * columns);
+				file.write(data, sizeof(m_val) * rows * columns);
 				file.close();
 			}
+
 	};
 	
 }

@@ -16,13 +16,15 @@
 namespace rs::rsvidx {
 	class LSHTable: public PersistantMultimap<LSH_ID_TYPE> {
 		public:
-			LSHTable(int, int);
+			LSHTable(int);
 		
 			~LSHTable();
 		
 			void add( rs::math::Vector &, LSH_ID_TYPE);
 		
 			rs::core::Array<LSH_ID_TYPE> * get(rs::math::Vector &);
+		
+			void setFoldername(const std::string &) override;
 				
 		private:
 			PersistantMatrix projections;

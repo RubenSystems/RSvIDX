@@ -57,18 +57,7 @@ namespace rs::math {
 			denom_b += b->get(i) * b->get(i);
 		}
 		return dot / (sqrt(denom_a) * sqrt(denom_b)) ;
-		/*
-		 old
-		 std::vector<double> A = a[0], B = b[0];
-					 double dot = 0.0, denom_a = 0.0, denom_b = 0.0 ;
-					 for(unsigned int i = 0u; i < A.size(); ++i) {
-						 dot += A[i] * B[i] ;
-						 denom_a += A[i] * A[i] ;
-						 denom_b += B[i] * B[i] ;
-					 }
-					 return dot / (sqrt(denom_a) * sqrt(denom_b)) ;
-		 
-		 */
+
 	}
 	
 	void generateProjections(Matrix & fill) {
@@ -106,7 +95,9 @@ namespace rs::math {
 		data = new m_val[n_rows * n_columns];
 	}
 	
-	Matrix::~Matrix(){ delete [] this->data; }
+	Matrix::~Matrix(){
+		delete [] this->data;
+	}
 	
 	Matrix::m_val Matrix::get(unsigned int row, unsigned int column) const {
 		return this->data[column + (row * this->columns)];
@@ -157,10 +148,13 @@ namespace rs::math {
 		Vector result (planes->size().rows);
 		dot(planes, vector, result);
 		
-		for (unsigned int i = 0; i < result.size(); i ++) {
+		for (unsigned int i = result.size(); i > 0; i --) {
+//			out(i);
+			
 			hash += result.get(i) > 0 ? (1 << i) : 0;
+//			out((unsigned int)hash);
 		}
-		
+
 		return hash;
 	}
 }

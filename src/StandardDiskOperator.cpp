@@ -26,7 +26,6 @@ namespace rs::rsvidx {
 	
 	void StandardDiskOperator::read(void * data, int size) {
 		((std::fstream*)file)->read(reinterpret_cast<char *>(data), size);
-
 	}
 	
 	void StandardDiskOperator::seek(int distance) {

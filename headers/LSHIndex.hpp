@@ -8,7 +8,6 @@
 #ifndef LSHIndex_hpp
 #define LSHIndex_hpp
 
-#define LSH_INDEXING_TYPE char
 
 #include "LSHTable.hpp"
 #include "Math.hpp"

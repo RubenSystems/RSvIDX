@@ -8,7 +8,7 @@
 #ifndef config_h
 #define config_h
 
-#define LSH_INDEXING_TYPE char
+#define LSH_INDEXING_TYPE unsigned char
 
 struct ID {
 	ID () {}
