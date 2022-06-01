@@ -14,13 +14,15 @@
 #include <stdio.h>
 #include <string>
 
+#include <unordered_map>
+
 namespace rs::rsvidx {
 	class LSHIndex {
 		
 		
 		public :
 		
-			LSHIndex(int numberOfTables, int hashSize, std::string filename);
+			LSHIndex(int, int, std::string);
 				
 			void add(const math::Vector &, LSH_ID_TYPE);
 		
@@ -28,6 +30,8 @@ namespace rs::rsvidx {
 		
 			void remove(const math::Vector &, LSH_ID_TYPE);
 			
+		std::unordered_map<int, int> x;
+		
 		private:
 		int numberOfTables, hashSize, dimensions;
 		LSHTable * tables;

@@ -86,14 +86,16 @@ namespace rs::math {
 	}
 	
 	// MARK: -MATRIX imp
-	Matrix::Matrix(unsigned int n_rows, unsigned int n_columns, m_val * n_data) : rows(n_rows), columns(n_columns) {
-		data = new m_val[n_rows * n_columns];
-		memmove(data, n_data, n_rows * n_columns * sizeof(m_val));
-	}
+	
 	
 	Matrix::Matrix(unsigned int n_rows, unsigned int n_columns) : rows(n_rows), columns(n_columns) {
 		data = new m_val[n_rows * n_columns];
 	}
+	
+	Matrix::Matrix(unsigned int n_rows, unsigned int n_columns, m_val * n_data) : Matrix(n_rows, n_columns) {
+		memmove(data, n_data, n_rows * n_columns * sizeof(m_val));
+	}
+	
 	
 	Matrix::~Matrix(){
 		delete [] this->data;
@@ -116,14 +118,14 @@ namespace rs::math {
 	}
 	
 	// MARK: -VECTOR imp
-	Vector::Vector(unsigned int size, v_val * n_data) : d_size(size) {
-		data = new v_val[size];
-		memmove(data, n_data, size * sizeof(v_val));
-	}
-	
 	Vector::Vector(unsigned int size) : d_size(size){
 		data = new v_val[size];
 	}
+	
+	Vector::Vector(unsigned int size, v_val * n_data) : Vector(size) {
+		memmove(data, n_data, size * sizeof(v_val));
+	}
+	
 	
 	Vector::~Vector(){
 		delete [] data;
@@ -149,12 +151,8 @@ namespace rs::math {
 		dot(planes, vector, result);
 		
 		for (unsigned int i = result.size(); i > 0; i --) {
-//			out(i);
-			
 			hash += result.get(i) > 0 ? (1 << i) : 0;
-//			out((unsigned int)hash);
 		}
-
 		return hash;
 	}
 }
