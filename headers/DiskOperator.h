@@ -26,6 +26,8 @@ namespace rs::rsvidx {
 			virtual void seek(int) = 0;
 			
 			virtual void close() = 0;
+			
+			virtual bool exists(const char *) = 0;
 		
 	};
 

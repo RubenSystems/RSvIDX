@@ -61,6 +61,13 @@ namespace rs::core {
 				return maximumSize;
 			}
 		
+			void emplaceBack(Array<T> * arr) {
+				this->resize(arr->size() + this->maximumSize);
+				memmove( data + currentPosition , arr->data, arr->size() * sizeof(T));
+			}
+		
+			
+		
 			
 		
 		protected:
@@ -95,6 +102,8 @@ namespace rs::core {
 				delete [] data;
 				data = newData;
 			}
+		
+			
 	};
 	
 };

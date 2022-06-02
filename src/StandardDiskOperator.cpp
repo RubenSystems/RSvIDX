@@ -36,6 +36,11 @@ namespace rs::rsvidx {
 		((std::fstream*)file)->close();
 	}
 	
+	bool StandardDiskOperator::exists(const char * filename) {
+		struct stat buffer;
+		return (stat (filename, &buffer) == 0);
+	}
+	
 	std::string strippingFilenames(const std::string forFullPath) {
 		std::string fullDirectory = "";
 		std::string word;

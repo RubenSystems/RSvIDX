@@ -12,7 +12,7 @@
 #include "Output.h"
 
 #include "config.h"
-#include "headers/LSHTable.hpp"
+#include "headers/LSHIndex.hpp"
 
 using namespace std::chrono;
 
@@ -20,15 +20,17 @@ using namespace std::chrono;
 
 int main(int argc, const char * argv[]) {
 	
-	rs::rsvidx::LSHTable table(3) ;
-	table.setFoldername("table1/");
-	
 	float vvals [] = {1,2,3};
 	rs::math::Vector vec(3, vvals);
-//	table.add(vec, ID("a is b"));
-	rs::core::Array<ID> * result = table.get(vec);
-	for(int i = 0; i < result->size(); i ++) {
-		out(result->operator[](i).data);
+	
+	rs::rsvidx::LSHIndex index(10, 3, "index") ;
+
+	
+	index.add(vec, ID("hello rr"));
+	rs::core::Array<LSH_ID_TYPE> result = index.get(vec);
+	
+	for (int i = 0; i < result.size(); i ++) {
+		out(result[i].data);
 	}
 	
 	

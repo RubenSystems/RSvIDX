@@ -22,19 +22,27 @@ namespace rs::rsvidx {
 		
 		public :
 		
+			/**
+			 LSH Index initaliser
+			 
+			 - parameter Number of tables: the number of tables to create.
+
+			 */
 			LSHIndex(int, int, std::string);
-				
-			void add(const math::Vector &, LSH_ID_TYPE);
 		
-			core::Array<LSH_ID_TYPE> get(const math::Vector &);
+			~LSHIndex();
+				
+			void add( math::Vector &, LSH_ID_TYPE);
+		
+			core::Array<LSH_ID_TYPE> get(math::Vector &);
 		
 			void remove(const math::Vector &, LSH_ID_TYPE);
 			
 		std::unordered_map<int, int> x;
 		
 		private:
-		int numberOfTables, hashSize, dimensions;
-		LSHTable * tables;
+		int numberOfTables, dimensions;
+		LSHTable ** tables;
 	};
 }
 

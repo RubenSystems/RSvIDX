@@ -42,18 +42,21 @@ namespace rs::rsvidx {
 				StateMap state;
 
 				StandardDiskOperator file = StandardDiskOperator();
-				file.open((filename + ".rsarray").c_str(), DiskOperator::OpenType::READ);
-				file.seek(0);
-				file.read(&state, sizeof(StateMap));
+				if (file.exists((filename + ".rsarray").c_str())) {
 				
-				this->resize(state.maximumSize);
-				this->currentPosition = state.currentPosition;
-				this->maximumSize = state.maximumSize;
-				this->resizable = state.resizable;
-				
-				file.seek(sizeof(StateMap));
-				file.read(this->data, state.currentPosition * sizeof(T));
-				file.close();
+					file.open((filename + ".rsarray").c_str(), DiskOperator::OpenType::READ);
+					file.seek(0);
+					file.read(&state, sizeof(StateMap));
+					
+					this->resize(state.maximumSize);
+					this->currentPosition = state.currentPosition;
+					this->maximumSize = state.maximumSize;
+					this->resizable = state.resizable;
+					
+					file.seek(sizeof(StateMap));
+					file.read(this->data, state.currentPosition * sizeof(T));
+					file.close();
+				}
 
 			}
 		
@@ -71,7 +74,7 @@ namespace rs::rsvidx {
 	class PersistantMultimap {
 		public:
 		
-			PersistantMultimap(int n_size): size((n_size * 8) << 2) {
+			PersistantMultimap(int n_size): size(rs::math::power(2, (n_size * 8))) {
 				buckets = new PersistantArray<T>* [this->size];
 				memset(buckets, 0, sizeof(PersistantArray<T> *) * (this->size));
 			}
@@ -91,8 +94,14 @@ namespace rs::rsvidx {
 			}
 			
 			void add(unsigned int index, const T & data) {
+				if (index > size) {
+					throw std::runtime_error("[ERROR] - index out of bounds");
+				}
+				
 				loadBucket(index);
+				
 				PersistantArray<T> * bucket = buckets[index];
+				
 				bucket->add(data);
 				
 			}
@@ -141,12 +150,14 @@ namespace rs::rsvidx {
 			}
 		
 			void load(const std::string & filename) {
-				StandardDiskOperator file = StandardDiskOperator();
 				
-				file.open((filename + ".rsmatrix").c_str(), DiskOperator::OpenType::READ);
-				file.seek(0);
-				file.read(data, sizeof(m_val) * rows * columns);
-				file.close();
+				StandardDiskOperator file = StandardDiskOperator();
+				if (file.exists((filename + ".rsmatrix").c_str())) {
+					file.open((filename + ".rsmatrix").c_str(), DiskOperator::OpenType::READ);
+					file.seek(0);
+					file.read(data, sizeof(m_val) * rows * columns);
+					file.close();
+				}
 			}
 			
 			void save(const std::string & filename) {

@@ -27,6 +27,8 @@ namespace rs::rsvidx {
 		
 			void close();
 		
+			bool exists(const char *);
+		
 		private:
 			void * file;
 		

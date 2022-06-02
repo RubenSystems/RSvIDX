@@ -16,6 +16,7 @@
 namespace rs::rsvidx {
 	class LSHTable: public PersistantMultimap<LSH_ID_TYPE> {
 		public:
+		
 			LSHTable(int);
 		
 			~LSHTable();
@@ -25,7 +26,7 @@ namespace rs::rsvidx {
 			rs::core::Array<LSH_ID_TYPE> * get(rs::math::Vector &);
 		
 			void setFoldername(const std::string &) override;
-				
+						
 		private:
 			PersistantMatrix projections;
 	};

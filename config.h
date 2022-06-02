@@ -11,18 +11,20 @@
 #define LSH_INDEXING_TYPE unsigned char
 
 struct ID {
+	const static int idsize = 8;
+	
 	ID () {}
 	
 	ID (const std::string & string) {
 		const char * newData = string.c_str();
-		memmove(data, newData, 10);
+		memmove(data, newData, idsize);
 	}
 	
 	ID(const ID & copy) {
-		memcpy(data, copy.data, 10);
+		memcpy(data, copy.data, idsize);
 	}
 	
-	char data[10];
+	char data[idsize];
 };
 
 #define LSH_ID_TYPE ID
