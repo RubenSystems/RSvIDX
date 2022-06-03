@@ -46,11 +46,22 @@ namespace rs::core {
 				if (currentPosition >= maximumSize) {
 					enlarge();
 				}
-				
 			}
 			
 			void remove() {
 				data[currentPosition--].~T();
+				if (currentPosition < maximumSize / enlargementFactor) {
+					reduce();
+				}
+			}
+		
+			void remove(unsigned int index) {
+				data[index].~T();
+				memmove(&(data[index]), &(data[index + 1]), (currentPosition - index - 1) * sizeof(T));
+				currentPosition --;
+				if (currentPosition < maximumSize / enlargementFactor) {
+					reduce();
+				}
 			}
 			
 			int size() {
@@ -66,10 +77,6 @@ namespace rs::core {
 				memmove( &(data[currentPosition]) , arr->data, arr->size() * sizeof(T));
 				this->currentPosition += arr->size();
 			}
-		
-			
-		
-			
 		
 		protected:
 			int maximumSize;
