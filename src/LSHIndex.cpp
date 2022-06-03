@@ -31,7 +31,7 @@ LSHIndex::~LSHIndex() {
 	for(int i = 0; i < numberOfTables; i ++) {
 		delete tables[i];
 	}
-	delete[] tables;
+	delete [] tables;
 }
 
 
