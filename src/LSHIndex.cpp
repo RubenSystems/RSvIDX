@@ -72,6 +72,10 @@ rs::core::Array<ID> LSHIndex::get(math::Vector & vec) {
 	return array;
 }
 
-void LSHIndex::remove(const rs::math::Vector &, ID){
-	
+void LSHIndex::remove(rs::math::Vector & vec, ID id){
+	for (int i = 0; i < numberOfTables; i ++) {
+		std::async(std::launch::async, [this, i, &vec, &id](){
+			tables[i]->remove(vec, id);
+		});
+	}
 }

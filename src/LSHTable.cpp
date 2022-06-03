@@ -35,3 +35,14 @@ void LSHTable::setFoldername(const std::string & foldername) {
 }
 
 
+void LSHTable::remove(rs::math::Vector & vector, ID id) {
+	LSH_INDEXING_TYPE hash = rs::math::hash(&projections, &vector);
+	rs::core::Array<ID> * bucket = this->PersistantMultimap<ID>::get((unsigned int)hash);
+	
+	for (int i = 0; i < bucket->size(); i ++) {
+		if (bucket->operator[](i) == id) {
+			bucket->remove(i);
+			return;
+		}
+	}
+}

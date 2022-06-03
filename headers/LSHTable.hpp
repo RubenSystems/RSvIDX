@@ -26,6 +26,8 @@ namespace rs::rsvidx {
 		
 			rs::core::Array<ID> * get(rs::math::Vector &);
 		
+			void remove(rs::math::Vector &, ID);
+		
 			void setFoldername(const std::string &) override;
 						
 		private:

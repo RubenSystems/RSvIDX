@@ -23,6 +23,15 @@ struct ID {
 		memcpy(data, copy.data, idsize);
 	}
 	
+	bool operator == (const ID & rhs) {
+		for (int i = 0; i < idsize; i ++) {
+			if (data[i] != rhs.data[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	char data[idsize];
 };
 

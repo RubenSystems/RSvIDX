@@ -35,7 +35,7 @@ namespace rs::rsvidx {
 		
 			core::Array<ID> get(math::Vector &);
 		
-			void remove(const math::Vector &, ID);
+			void remove(math::Vector &, ID);
 			
 		
 		private:
