@@ -10,6 +10,8 @@
 
 #include <future>
 #include <vector>
+#include <unordered_set>
+#include <string>
 
 using namespace rs::rsvidx;
 
@@ -34,7 +36,7 @@ LSHIndex::~LSHIndex() {
 
 
 
-void LSHIndex::add( math::Vector & vec, LSH_ID_TYPE id) {
+void LSHIndex::add( math::Vector & vec, ID id) {
 	for (int i = 0; i < numberOfTables; i ++) {
 		std::async(std::launch::async, [this, i, &vec, &id](){
 			tables[i]->add(vec, id);
@@ -42,31 +44,34 @@ void LSHIndex::add( math::Vector & vec, LSH_ID_TYPE id) {
 	}
 }
 
-rs::core::Array<LSH_ID_TYPE> LSHIndex::get(math::Vector & vec) {
-	std::vector<std::future<rs::core::Array<LSH_ID_TYPE> *>> futures;
+rs::core::Array<ID> LSHIndex::get(math::Vector & vec) {
+	std::vector<std::future<rs::core::Array<ID> *>> futures;
 	futures.resize(numberOfTables);
 	for (int i = 0; i < numberOfTables; i ++) {
 		futures[i] = std::async(std::launch::async, [this, i, &vec](){
 			return tables[i]->get(vec);
 		});
 	}
-	rs::core::Array<LSH_ID_TYPE> array;
-	
+	rs::core::Array<ID> array;
+	std::unordered_set<std::string> ids;
 	for(int i = 0; i < futures.size(); i++) {
-		rs::core::Array<LSH_ID_TYPE> * resultshard = futures[i].get();
-		out(resultshard->size());
+		rs::core::Array<ID> * resultshard = futures[i].get();
 		for (int i = 0; i < resultshard->size(); i ++) {
-			resultshard->operator[](i).data[7] = 0;
-			out(resultshard->operator[](i).data << "-");
+			resultshard->operator[](i).data[ID::idsize - 1] = 0;
+			std::string element = std::string(resultshard->operator[](i).data);
+			
+			if (ids.find(element) == ids.end()) {
+				array.add(resultshard->operator[](i));
+				ids.insert(element);
+			}
 			
 		}
-		out("");
-		array.emplaceBack(resultshard);
+	
 	}
 	
 	return array;
 }
 
-void LSHIndex::remove(const rs::math::Vector &, LSH_ID_TYPE){
+void LSHIndex::remove(const rs::math::Vector &, ID){
 	
 }

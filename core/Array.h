@@ -62,8 +62,9 @@ namespace rs::core {
 			}
 		
 			void emplaceBack(Array<T> * arr) {
-				this->resize(arr->size() + this->maximumSize);
-				memmove( data + currentPosition , arr->data, arr->size() * sizeof(T));
+				this->resize(arr->size() + maximumSize);
+				memmove( &(data[currentPosition]) , arr->data, arr->size() * sizeof(T));
+				this->currentPosition += arr->size();
 			}
 		
 			
@@ -79,28 +80,24 @@ namespace rs::core {
 			const static int enlargementFactor = 2;
 		
 			void enlarge() {
-				
-				maximumSize *= enlargementFactor;
-				resize(maximumSize);
+				resize(maximumSize * enlargementFactor);
 			}
 		
 			void reduce() {
-				maximumSize /= enlargementFactor;
-				resize(maximumSize);
+				resize(maximumSize / enlargementFactor);
 			}
 		
 			void resize(int newSize = 2) {
 				/*
-				 
 				 There is a *new* kid on the block
-				 
 				*/
 				//data = (T *)realloc(data, newSize * sizeof(T));
-				
+				maximumSize = newSize;
 				T* newData = new T[newSize];
 				memmove(newData, data, currentPosition * sizeof(T));
 				delete [] data;
 				data = newData;
+				
 			}
 		
 			

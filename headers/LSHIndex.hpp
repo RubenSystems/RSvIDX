@@ -13,8 +13,7 @@
 #include "Math.hpp"
 #include <stdio.h>
 #include <string>
-
-#include <unordered_map>
+#include "ID.h"
 
 namespace rs::rsvidx {
 	class LSHIndex {
@@ -32,13 +31,12 @@ namespace rs::rsvidx {
 		
 			~LSHIndex();
 				
-			void add( math::Vector &, LSH_ID_TYPE);
+			void add( math::Vector &, ID);
 		
-			core::Array<LSH_ID_TYPE> get(math::Vector &);
+			core::Array<ID> get(math::Vector &);
 		
-			void remove(const math::Vector &, LSH_ID_TYPE);
+			void remove(const math::Vector &, ID);
 			
-		std::unordered_map<int, int> x;
 		
 		private:
 		int numberOfTables, dimensions;
