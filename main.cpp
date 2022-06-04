@@ -12,7 +12,7 @@
 #include "Output.h"
 
 #include "config.h"
-#include "headers/LSHIndex.hpp"
+#include "headers/InvertedIndex.hpp"
 
 using namespace std::chrono;
 
@@ -20,19 +20,19 @@ using namespace std::chrono;
 
 int main(int argc, const char * argv[]) {
 	
+	rs::rsvidx::InvertedIndex x (10);
+	x.setFoldername("test/");
 	
-//	float vvals [] = {1,2,3};
-//	rs::math::Vector vec(3, vvals);
-//
-//	rs::rsvidx::LSHIndex index(10, 3, "index") ;
-//
-//
-////	index.add(vec, ID("hello rr"));
-//	rs::core::Array<ID> result = index.get(vec);
-//	for (int i = 0; i < result.size(); i ++) {
-//		out(result[i].data);
-//	}
+	char valx[5] = "RUBE";
+	valx[4] = '\0';
 	
+//	x.add(InvertedIndexNode(ID("1223"), valx));
+	x.add(InvertedIndexNode(ID("1222"), valx));
+	
+	
+	const char * val = x.get(ID("1222"));
+	out(val);
+
 	
 	return 0;
 }

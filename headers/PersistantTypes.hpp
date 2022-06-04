@@ -74,7 +74,7 @@ namespace rs::rsvidx {
 	class PersistantMultimap {
 		public:
 		
-			PersistantMultimap(int n_size): size(rs::math::power(2, (n_size * 8))) {
+			PersistantMultimap(int n_size): size(n_size) {
 				buckets = new PersistantArray<T>* [this->size];
 				memset(buckets, 0, sizeof(PersistantArray<T> *) * (this->size));
 			}
@@ -106,7 +106,7 @@ namespace rs::rsvidx {
 				
 			}
 		
-			//This may look bad but it gets cleaned up later
+			//This may look bad but it gets cleaned up later so freeing the array is handled 
 			core::Array<T> * get(unsigned int index) {
 				loadBucket(index);
 				return buckets[index];
@@ -118,9 +118,10 @@ namespace rs::rsvidx {
 			
 		protected:
 			std::string foldername = "";
-			
-		private:
 			int size;
+		
+		private:
+			
 			PersistantArray<T> ** buckets;
 			
 		

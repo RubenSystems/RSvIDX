@@ -10,7 +10,7 @@
 
 using namespace rs::rsvidx;
 
-LSHTable::LSHTable(int dimensions) : projections(sizeof(LSH_INDEXING_TYPE) * 8, dimensions), PersistantMultimap<ID>(sizeof(LSH_INDEXING_TYPE)) {
+LSHTable::LSHTable(int dimensions) : projections(sizeof(LSH_INDEXING_TYPE) * 8, dimensions), PersistantMultimap<ID>(rs::math::power(2, (sizeof(LSH_INDEXING_TYPE) * 8))) {
 	rs::math::generateProjections(projections);
 
 }

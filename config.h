@@ -11,4 +11,7 @@
 #define LSH_INDEXING_TYPE unsigned char
 #define ID_SIZE 10
 
+#define STRING_SIZE 50
+
+
 #endif /* config_h */
