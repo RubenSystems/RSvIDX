@@ -12,7 +12,7 @@
 #include "Output.h"
 
 #include "config.h"
-#include "headers/InvertedIndex.hpp"
+#include "headers/OrderedIndex.hpp"
 
 using namespace std::chrono;
 
@@ -20,19 +20,22 @@ using namespace std::chrono;
 
 int main(int argc, const char * argv[]) {
 	
-	rs::core::Array<int> array;
+	rs::rsvidx::OrderedIndex x;
 	
-	array.add(1);
-	array.add(2);
-	array.add(3);
-	array.add(4);
-	array.add(5);
+	x.insert({ID("hi1"), 10});
+	x.insert({ID("hi2"), 20});
+	x.insert({ID("hi3 "), 30});
 	
-	array.insert(1, 10);
 	
-	for(int i = 0; i < array.size(); i ++) {
-		out(array[i]);
+	x.save("test");
+//
+//
+	auto result = x.getGreaterThan(19);
+	for (int i = 0; i < result.size(); i ++) {
+		out(result[i].id.data);
 	}
+	
+	
 	
 	return 0;
 }

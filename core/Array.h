@@ -29,6 +29,14 @@ namespace rs::core {
 
 			}
 		
+			Array(T * buffer, int start, int end, bool resizable = true) :
+				maximumSize((end - start) + 2), currentPosition(end - start), resizable(resizable) {
+				data = new T[this->maximumSize];
+					
+					
+				memmove(data, &(buffer[start]), (end - start) * sizeof(T));
+			}
+		
 			~Array() {
 				delete[] data;
 			}

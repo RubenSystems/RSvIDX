@@ -25,13 +25,11 @@ namespace rs::rsvidx {
 		public:
 			OrderedIndex();
 		
-		
 			/*
 			 
 			 These functions will return *than or equal to
 			 
 			 */
-		
 			rs::core::Array<OrderedIndexNode> getGreaterThan(OrderedIndexNode::orderednode_val);
 		
 			rs::core::Array<OrderedIndexNode> getLessThan(OrderedIndexNode::orderednode_val);
@@ -39,6 +37,7 @@ namespace rs::rsvidx {
 			void insert(OrderedIndexNode);
 		
 		private:
+			unsigned int search(OrderedIndexNode::orderednode_val);
 		
 	};
 }
