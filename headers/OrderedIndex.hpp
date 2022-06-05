@@ -9,5 +9,38 @@
 #define OrderedIndex_hpp
 
 #include <stdio.h>
+#include "PersistantTypes.hpp"
+#include "ID.h"
+
+namespace rs::rsvidx {
+	struct OrderedIndexNode {
+		typedef float orderednode_val;
+		
+		ID id;
+		float data;
+	};
+	
+	class OrderedIndex: public PersistantArray<OrderedIndexNode> {
+		
+		public:
+			OrderedIndex();
+		
+		
+			/*
+			 
+			 These functions will return *than or equal to
+			 
+			 */
+		
+			rs::core::Array<OrderedIndexNode> getGreaterThan(OrderedIndexNode::orderednode_val);
+		
+			rs::core::Array<OrderedIndexNode> getLessThan(OrderedIndexNode::orderednode_val);
+		
+			void insert(OrderedIndexNode);
+		
+		private:
+		
+	};
+}
 
 #endif /* OrderedIndex_hpp */

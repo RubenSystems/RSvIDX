@@ -47,6 +47,20 @@ namespace rs::core {
 					enlarge();
 				}
 			}
+		
+			void insert(unsigned int at, const T & value) {
+				if (currentPosition + 1 >= maximumSize && resizable == false) {
+					throw std::runtime_error("[error] - cannot insert into a full non-resizable array");
+				}
+				currentPosition++;
+				
+				memmove(&(data[at + 1]), &(data[at]), (currentPosition - at - 1) * sizeof(T));
+				data[at] = value;
+				
+				if (currentPosition >= maximumSize) {
+					enlarge();
+				}
+			}
 			
 			void remove() {
 				data[currentPosition--].~T();

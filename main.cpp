@@ -20,19 +20,19 @@ using namespace std::chrono;
 
 int main(int argc, const char * argv[]) {
 	
-	rs::rsvidx::InvertedIndex x (10);
-	x.setFoldername("test/");
+	rs::core::Array<int> array;
 	
-	char valx[5] = "RUBE";
-	valx[4] = '\0';
+	array.add(1);
+	array.add(2);
+	array.add(3);
+	array.add(4);
+	array.add(5);
 	
-//	x.add(InvertedIndexNode(ID("1223"), valx));
-	x.add(InvertedIndexNode(ID("1222"), valx));
+	array.insert(1, 10);
 	
-	
-	const char * val = x.get(ID("1222"));
-	out(val);
-
+	for(int i = 0; i < array.size(); i ++) {
+		out(array[i]);
+	}
 	
 	return 0;
 }
