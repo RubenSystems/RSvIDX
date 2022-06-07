@@ -20,21 +20,6 @@ using namespace std::chrono;
 
 int main(int argc, const char * argv[]) {
 	
-	rs::rsvidx::OrderedIndex x;
-	
-	x.insert({ID("hi1"), 10});
-	x.insert({ID("hi2"), 20});
-	x.insert({ID("hi3 "), 30});
-	
-	
-	x.save("test");
-//
-//
-	auto result = x.getGreaterThan(19);
-	for (int i = 0; i < result.size(); i ++) {
-		out(result[i].id.data);
-	}
-	
 	
 	
 	return 0;

@@ -69,6 +69,9 @@ namespace rs::math {
 		public:
 			typedef float v_val;
 		
+			//Define an empty vector
+			Vector();
+		
 			Vector(unsigned int size, v_val * data);
 		
 			Vector(unsigned int size);
@@ -81,9 +84,15 @@ namespace rs::math {
 		
 			unsigned int size() const;
 		
+			/*
+			 Don't use this;
+			 */
+			v_val * getbuffer() const;
+		
 		private:
 			v_val * data;
 			unsigned int d_size;
+		
 	};
 	
 	//This function is faster then numpys 

@@ -126,8 +126,10 @@ namespace rs::math {
 		memmove(data, n_data, size * sizeof(v_val));
 	}
 	
+	Vector::Vector() : d_size(0), data(0) {}
 	
 	Vector::~Vector(){
+		if (data != 0)
 		delete [] data;
 	}
 	
@@ -139,9 +141,15 @@ namespace rs::math {
 		return this->data[index];
 	}
 	
+	Vector::v_val * Vector::getbuffer() const {
+		return this->data;
+	}
+	
 	unsigned int Vector::size() const {
 		return this->d_size;
 	}
+	
+	
 	
 	
 	
