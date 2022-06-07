@@ -12,13 +12,24 @@
 #include "Output.h"
 
 #include "config.h"
-#include "headers/OrderedIndex.hpp"
+#include "headers/DataStore.hpp"
 
 using namespace std::chrono;
 
 
 
 int main(int argc, const char * argv[]) {
+	
+	
+	rs::rsvidx::DataStore store("data/");
+	
+	float v_val [] = {1,2,3};
+	
+	rs::math::Vector vec(3, v_val);
+	
+	rs::rsvidx::Record rec (ID("hi"), "i am cool", 9, vec);
+	
+	store.set(rec);
 	
 	
 	

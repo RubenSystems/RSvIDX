@@ -17,6 +17,13 @@ namespace rs::rsvidx {
 	
 	struct Record {
 
+		Record () = default;
+		
+		Record(const ID & id, char * data, int dataLength, const rs::math::Vector & vec):
+		id (id), data(data), vector(vec) {
+			size.data = dataLength;
+			size.vector = vec.size();
+		}
 		
 		ID id;
 

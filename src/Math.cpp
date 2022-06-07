@@ -129,8 +129,9 @@ namespace rs::math {
 	Vector::Vector() : d_size(0), data(0) {}
 	
 	Vector::~Vector(){
-		if (data != 0)
-		delete [] data;
+		if (d_size != 0){
+			delete [] data;
+		}
 	}
 	
 	Vector::v_val Vector::get(unsigned int index) const {
