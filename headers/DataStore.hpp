@@ -19,21 +19,23 @@ namespace rs::rsvidx {
 
 		Record () = default;
 		
-		Record(const ID & id, char * data, int dataLength, const rs::math::Vector & vec):
-		id (id), data(data), vector(vec) {
+		Record(const ID & id, char * data, int dataLength):
+			id (id), data(data) {
 			size.data = dataLength;
-			size.vector = vec.size();
+		}
+		
+		~Record() {
+			if (data != nullptr)
+				delete data;
 		}
 		
 		ID id;
 
 		struct {
 			int data;
-			int vector;
 		} size;
 		
 		char* data;
-		rs::math::Vector vector;
 	};
 	
 	class DataStore {

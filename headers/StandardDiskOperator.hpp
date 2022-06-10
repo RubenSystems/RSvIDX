@@ -22,7 +22,7 @@ namespace rs::rsvidx {
 			void write(void *, int);
 		
 			void read(void *, int);
-		
+				
 			void seek(int);
 		
 			void close();

@@ -23,13 +23,12 @@ int main(int argc, const char * argv[]) {
 	
 	rs::rsvidx::DataStore store("data/");
 	
-	float v_val [] = {1,2,3};
+
 	
-	rs::math::Vector vec(3, v_val);
-	
-	rs::rsvidx::Record rec (ID("hi"), "i am cool", 9, vec);
+	rs::rsvidx::Record rec (ID("jeff"), (char *)std::string("i sup super cool").c_str(), (int)std::string("i sup super cool").size());
 	
 	store.set(rec);
+	out(store.get(ID("jeff")).data);
 	
 	
 	
