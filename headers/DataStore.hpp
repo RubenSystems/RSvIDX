@@ -26,7 +26,6 @@ namespace rs::rsvidx {
 		}
 		
 		~Record() {
-			out((data));
 		}
 		
 		ID id;

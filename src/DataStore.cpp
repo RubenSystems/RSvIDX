@@ -29,7 +29,7 @@ namespace rs::rsvidx {
 
 		file.seek(currentPosition);
 
-		file.write((char *)record.data.c_str(), record.size.data * sizeof(char));
+		file.write((void *)&record.data[0], record.size.data * sizeof(char));
 		currentPosition += record.size.data * sizeof(char);
 		
 //		file.seek(currentPosition);
@@ -57,9 +57,8 @@ namespace rs::rsvidx {
 
 
 		file.seek(currentPosition);
-		
-		
-		file.read(&(record.data), sizeof(char) * record.size.data);
+		record.data.resize(record.size.data);
+		file.read((void *)&record.data[0], sizeof(char) * record.size.data);
 		
 		
 //		file.seek(currentPosition);
