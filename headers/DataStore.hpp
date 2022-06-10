@@ -12,6 +12,7 @@
 #include <string>
 #include "ID.h"
 #include "Math.hpp"
+#include "../Output.h"
 
 namespace rs::rsvidx {
 	
@@ -19,14 +20,13 @@ namespace rs::rsvidx {
 
 		Record () = default;
 		
-		Record(const ID & id, char * data, int dataLength):
+		Record(const ID & id, const std::string & data):
 			id (id), data(data) {
-			size.data = dataLength;
+				size.data = (int)data.size();
 		}
 		
 		~Record() {
-			if (data != nullptr)
-				delete data;
+			out((data));
 		}
 		
 		ID id;
@@ -35,7 +35,7 @@ namespace rs::rsvidx {
 			int data;
 		} size;
 		
-		char* data;
+		std::string data;
 	};
 	
 	class DataStore {

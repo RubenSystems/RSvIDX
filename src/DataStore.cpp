@@ -6,9 +6,8 @@
 //
 
 #include "DataStore.hpp"
+
 #include "../headers/StandardDiskOperator.hpp"
-#include <fstream>
-#include "../Output.h"
 
 namespace rs::rsvidx {
 	DataStore::DataStore(const std::string & foldername) :
@@ -16,7 +15,6 @@ namespace rs::rsvidx {
 	
 	void DataStore::set(const Record & record) {
 		StandardDiskOperator file = StandardDiskOperator();
-		out((foldername + record.id.data + ".rsrecord"));
 		file.open((foldername + record.id.data + ".rsrecord").c_str(), DiskOperator::OpenType::WRITE);
 		int currentPosition = 0;
 
@@ -31,7 +29,7 @@ namespace rs::rsvidx {
 
 		file.seek(currentPosition);
 
-		file.write(record.data, record.size.data * sizeof(char));
+		file.write((char *)record.data.c_str(), record.size.data * sizeof(char));
 		currentPosition += record.size.data * sizeof(char);
 		
 //		file.seek(currentPosition);
@@ -42,7 +40,6 @@ namespace rs::rsvidx {
 	
 	Record DataStore::get(const ID & id) {
 		StandardDiskOperator file = StandardDiskOperator();
-		out((foldername + id.data + ".rsrecord"));
 		file.open((foldername + id.data + ".rsrecord").c_str(), DiskOperator::OpenType::READ);
 		
 		Record record;
@@ -60,10 +57,10 @@ namespace rs::rsvidx {
 
 
 		file.seek(currentPosition);
-		record.data = new char [record.size.data + 1];
 		
-		file.read(record.data, sizeof(char) * record.size.data);
-		record.data[ sizeof(char) * record.size.data] = 0;
+		
+		file.read(&(record.data), sizeof(char) * record.size.data);
+		
 		
 //		file.seek(currentPosition);
 //		file.read(record.data, record.size.data * sizeof(char));

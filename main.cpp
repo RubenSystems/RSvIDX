@@ -25,9 +25,9 @@ int main(int argc, const char * argv[]) {
 	
 
 	
-	rs::rsvidx::Record rec (ID("jeff"), (char *)std::string("i sup super cool").c_str(), (int)std::string("i sup super cool").size());
+	rs::rsvidx::Record rec (ID("jeff"), "{'1': '2'}");
 	
-	store.set(rec);
+//	store.set(rec);
 	out(store.get(ID("jeff")).data);
 	
 	
