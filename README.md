@@ -6,7 +6,7 @@ ___RSvIDX takes everything great about RSmIDX and makes it better:___
 - faster and more efficient math library
 - optimised disk operations
 - better memory performance
-- no dependencies
+- no dependencies (new build size is 98% smaller)
 
 RSvIDX also comes with general purpose indexes: 
 * Ordered 
