@@ -55,15 +55,10 @@ namespace rs::rsvidx {
 		currentPosition += sizeof(record.size);
 
 
-
 		file.seek(currentPosition);
 		record.data.resize(record.size.data);
 		file.read((void *)&record.data[0], sizeof(char) * record.size.data);
 		
-		
-//		file.seek(currentPosition);
-//		file.read(record.data, record.size.data * sizeof(char));
-//		currentPosition += record.size.data * sizeof(char);
 		
 //		rs::math::Vector(record.size.vector);
 //		
