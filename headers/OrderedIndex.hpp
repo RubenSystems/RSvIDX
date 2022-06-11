@@ -10,9 +10,9 @@
 
 #include <stdio.h>
 #include "PersistantTypes.hpp"
-#include "ID.h"
+#include "ID.hpp"
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	struct OrderedIndexNode {
 		typedef float orderednode_val;
 		
@@ -30,9 +30,9 @@ namespace rs::rsvidx {
 			 These functions will return *than or equal to
 			 
 			 */
-			rs::core::Array<OrderedIndexNode> getGreaterThan(OrderedIndexNode::orderednode_val);
+			core::Array<OrderedIndexNode> getGreaterThan(OrderedIndexNode::orderednode_val);
 		
-			rs::core::Array<OrderedIndexNode> getLessThan(OrderedIndexNode::orderednode_val);
+			core::Array<OrderedIndexNode> getLessThan(OrderedIndexNode::orderednode_val);
 		
 			void insert(OrderedIndexNode);
 		

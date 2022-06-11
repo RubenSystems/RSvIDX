@@ -15,7 +15,7 @@
 // TODO: - Check allocations for errors
 // TODO: - Add shrinking
 
-namespace rs::core {
+namespace core {
 	
 	template<class T>
 	class Array {

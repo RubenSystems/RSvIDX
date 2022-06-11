@@ -12,7 +12,7 @@
 #include "DiskOperator.h"
 
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	class StandardDiskOperator: public DiskOperator {
 		
 		public:

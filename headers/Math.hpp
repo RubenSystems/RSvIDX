@@ -15,7 +15,7 @@
 
 #include "../config.h"
 
-namespace rs::math {
+namespace math {
 	int power(int, int);
 	
 	class Random {

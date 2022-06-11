@@ -16,7 +16,7 @@
 
 #include "../Output.h"
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	
 	template <class T>
 	class PersistantArray : public core::Array<T> {
@@ -144,9 +144,9 @@ namespace rs::rsvidx {
 			}
 	};
 	
-	class PersistantMatrix : public rs::math::Matrix {
+	class PersistantMatrix : public math::Matrix {
 		public :
-			PersistantMatrix(unsigned int n_rows, unsigned int n_columns) : rs::math::Matrix(n_rows, n_columns) {
+			PersistantMatrix(unsigned int n_rows, unsigned int n_columns) : math::Matrix(n_rows, n_columns) {
 				memset(data, 0, sizeof(m_val) * n_rows * n_columns);
 			}
 		

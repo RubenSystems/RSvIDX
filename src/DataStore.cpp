@@ -5,11 +5,11 @@
 //  Created by Ruben Ticehurst-James on 05/06/2022.
 //
 
-#include "DataStore.hpp"
+#include "../headers/DataStore.hpp"
 
 #include "../headers/StandardDiskOperator.hpp"
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	DataStore::DataStore(const std::string & foldername) :
 		foldername(foldername) {}
 	
@@ -33,7 +33,7 @@ namespace rs::rsvidx {
 		currentPosition += record.size.data * sizeof(char);
 		
 //		file.seek(currentPosition);
-//		file.write(record.vector.getbuffer(), record.vector.size() * sizeof(rs::math::Vector::v_val));
+//		file.write(record.vector.getbuffer(), record.vector.size() * sizeof(math::Vector::v_val));
 
 		file.close();
 	}
@@ -60,10 +60,10 @@ namespace rs::rsvidx {
 		file.read((void *)&record.data[0], sizeof(char) * record.size.data);
 		
 		
-//		rs::math::Vector(record.size.vector);
+//		math::Vector(record.size.vector);
 //		
 //		file.seek(currentPosition);
-//		file.read(record.vector.getbuffer(), record.vector.size() * sizeof(rs::math::Vector::v_val));
+//		file.read(record.vector.getbuffer(), record.vector.size() * sizeof(math::Vector::v_val));
 
 		file.close();
 		

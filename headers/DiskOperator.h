@@ -8,7 +8,7 @@
 #ifndef DiskOperator_h
 #define DiskOperator_h
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	class DiskOperator {
 		
 		public:

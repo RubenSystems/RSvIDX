@@ -5,10 +5,10 @@
 //  Created by Ruben Ticehurst-James on 03/06/2022.
 //
 
-#include "InvertedIndex.hpp"
+#include "../headers/InvertedIndex.hpp"
 
 
-using namespace rs::rsvidx;
+using namespace rsvidx;
 
 InvertedIndex::InvertedIndex (int bucketCount) : PersistantMultimap<InvertedIndexNode>(bucketCount) {
 	
@@ -22,7 +22,7 @@ void InvertedIndex::add(InvertedIndexNode item) {
 
 const char * InvertedIndex::get(const ID & id) {
 	int index = hash(id);
-	rs::core::Array<InvertedIndexNode> * result = this->PersistantMultimap<InvertedIndexNode>::get(index);
+	core::Array<InvertedIndexNode> * result = this->PersistantMultimap<InvertedIndexNode>::get(index);
 	for(int i = 0; i < result->size(); i ++) {
 		InvertedIndexNode & item = result->operator[](i);
 		out(item.id.data);

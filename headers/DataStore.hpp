@@ -10,11 +10,11 @@
 
 #include <stdio.h>
 #include <string>
-#include "ID.h"
+#include "ID.hpp"
 #include "Math.hpp"
 #include "../Output.h"
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	
 	struct Record {
 

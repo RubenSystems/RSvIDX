@@ -13,9 +13,9 @@
 #include "Math.hpp"
 #include <stdio.h>
 #include <string>
-#include "ID.h"
+#include "ID.hpp"
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	class LSHIndex {
 		
 		

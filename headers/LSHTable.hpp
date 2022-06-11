@@ -12,9 +12,9 @@
 #include "PersistantTypes.hpp"
 #include "../config.h"
 #include "Math.hpp"
-#include "ID.h"
+#include "ID.hpp"
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	class LSHTable: public PersistantMultimap<ID> {
 		public:
 		
@@ -22,11 +22,11 @@ namespace rs::rsvidx {
 		
 			~LSHTable();
 		
-			void add( rs::math::Vector &, ID);
+			void add( math::Vector &, ID);
 		
-			rs::core::Array<ID> * get(rs::math::Vector &);
+			core::Array<ID> * get(math::Vector &);
 		
-			void remove(rs::math::Vector &, ID);
+			void remove(math::Vector &, ID);
 		
 			void setFoldername(const std::string &) override;
 						

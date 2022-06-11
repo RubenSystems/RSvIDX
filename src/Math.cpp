@@ -5,7 +5,7 @@
 //  Created by Ruben Ticehurst-James on 17/05/2022.
 //
 
-#include "Math.hpp"
+#include "../headers/Math.hpp"
 #include <math.h>
 #include <system_error>
 #include <future>
@@ -14,7 +14,7 @@
 
 
 
-static rs::math::Vector::v_val calculateVectorRow(rs::math::Matrix * a, rs::math::Vector * b, unsigned int row) {
+static math::Vector::v_val calculateVectorRow(math::Matrix * a, math::Vector * b, unsigned int row) {
 	float sum = 0;
 	for (unsigned int column = 0; column < a->size().columns; column++) {
 		sum += a->get(row, column) * b->get(column);
@@ -23,7 +23,7 @@ static rs::math::Vector::v_val calculateVectorRow(rs::math::Matrix * a, rs::math
 	return sum;
 }
 
-namespace rs::math {
+namespace math {
 	
 	// MARK: -Utility Functions
 	int power(int a, int b) {

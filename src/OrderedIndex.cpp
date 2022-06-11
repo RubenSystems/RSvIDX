@@ -5,22 +5,22 @@
 //  Created by Ruben Ticehurst-James on 03/06/2022.
 //
 
-#include "OrderedIndex.hpp"
+#include "../headers/OrderedIndex.hpp"
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	OrderedIndex::OrderedIndex() : PersistantArray<OrderedIndexNode>() {}
 
 	/*
 	 These functions will return *than or equal to
 	 */
-	rs::core::Array<OrderedIndexNode> OrderedIndex::getGreaterThan(OrderedIndexNode::orderednode_val value) {
+	core::Array<OrderedIndexNode> OrderedIndex::getGreaterThan(OrderedIndexNode::orderednode_val value) {
 		unsigned int index = search(value);
-		return rs::core::Array<OrderedIndexNode>(data, index, this->size());
+		return core::Array<OrderedIndexNode>(data, index, this->size());
 	}
 
-	rs::core::Array<OrderedIndexNode> OrderedIndex::getLessThan(OrderedIndexNode::orderednode_val value) {
+	core::Array<OrderedIndexNode> OrderedIndex::getLessThan(OrderedIndexNode::orderednode_val value) {
 		unsigned int index = search(value);
-		return rs::core::Array<OrderedIndexNode>(data, 0, index);
+		return core::Array<OrderedIndexNode>(data, 0, index);
 	}
 
 	void OrderedIndex::insert(OrderedIndexNode value) {

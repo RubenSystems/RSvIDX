@@ -11,7 +11,7 @@
 #include "Array.h"
 #include "../config.h"
 
-namespace rs::core {
+namespace core {
 	
 	template <class T>
 	class HashArray : public Array<Array<T>> {

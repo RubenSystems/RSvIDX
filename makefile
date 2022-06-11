@@ -1,8 +1,9 @@
 
-C=gcc
+COMPILER=clang++
 CCFLAGS=-Wall
-LDFLAGS=
-SOURCES=$(wildcard src/*.c)
+
+HEADERS=$(wildcard headers/*.hpp)
+SOURCES=$(wildcard src/*.cpp)
 
 all:
-	C -fPIC -shared config.h -o bin/rsvidx.so SOURCES observe.h transmit.h
+	$(COMPILER) -std=c++11 -shared -o bin/rsvidx.so Binding.cpp $(SOURCES)

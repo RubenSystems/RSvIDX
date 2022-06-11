@@ -5,13 +5,13 @@
 //  Created by Ruben Ticehurst-James on 25/05/2022.
 //
 
-#include "StandardDiskOperator.hpp"
+#include "../headers/StandardDiskOperator.hpp"
 #include <fstream>
 #include <sstream>
 #include "../Output.h"
 #include <sys/stat.h>
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	void StandardDiskOperator::open(const char * filename, OpenType type){
 		file = new std::fstream;
 		createDirectory(filename);

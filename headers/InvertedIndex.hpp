@@ -11,7 +11,7 @@
 #include "../config.h"
 
 #include "PersistantTypes.hpp"
-#include "ID.h"
+#include "ID.hpp"
 #include <stdio.h>
 
 struct InvertedIndexNode {
@@ -33,7 +33,7 @@ struct InvertedIndexNode {
 	char data[STRING_SIZE];
 };
 
-namespace rs::rsvidx {
+namespace rsvidx {
 	class InvertedIndex: public PersistantMultimap<InvertedIndexNode> {
 		
 		public:
