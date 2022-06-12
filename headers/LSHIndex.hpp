@@ -36,9 +36,12 @@ namespace rsvidx {
 			core::Array<ID> get(math::Vector &);
 		
 			void remove(math::Vector &, ID);
-			
+					
+		void outInfo(){
+			out(numberOfTables);
+		}
 		
-		private:
+//		private:
 		int numberOfTables, dimensions;
 		LSHTable ** tables;
 	};

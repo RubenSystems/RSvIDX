@@ -13,6 +13,9 @@
 
 #include "headers/LSHIndex.hpp"
 
+#include "Output.h"
+
+
 extern "C" {
 
 	/*
@@ -23,45 +26,63 @@ extern "C" {
 	}
 	
 	/*
+	 Required Bindings for Array
+	 */
+	const char * array_get_id(core::Array<ID> * array, int index) {
+		return (const char *)&(array->operator[](index).data);
+	}
+
+	
+	/*
 	 Bindings for LSH
 	 */
-	void * lsh(int tables, int dimensions, const char * filename) {
-		rsvidx::LSHIndex * index = new rsvidx::LSHIndex(tables, dimensions, filename);
-		return index;
+	
+	rsvidx::LSHIndex * lsh(int tables, int dimensions, const char * filename) {
+		return new rsvidx::LSHIndex(tables, dimensions, std::string(filename));
 	}
 	
 	void lsh_add(
-				 void * index,
+				 rsvidx::LSHIndex * index,
 				 const char * id,
 				 unsigned int size,
 				 math::Vector::v_val * data
 				 ) {
-		
+
 		math::Vector vec (size, data);
-		((rsvidx::LSHIndex*)index)->add(vec, ID(id));
+		index->add(vec, ID(id));
 	}
 	
 	void lsh_remove(
-				 void * index,
-				 const char * id,
-				 unsigned int size,
-				 math::Vector::v_val * data
+				rsvidx::LSHIndex * index,
+				const char * id,
+				unsigned int size,
+				math::Vector::v_val * data
 				 ) {
 		
 		math::Vector vec (size, data);
-		((rsvidx::LSHIndex*)index)->remove(vec, ID(id));
+		index->remove(vec, ID(id));
 	}
 	
-	ID * lsh_get(
-				 void * index,
-				 unsigned int size,
-				 math::Vector::v_val * data
+	/*
+	 Cleanup is your problem now
+	 */
+	core::Array<ID> * lsh_get (
+				rsvidx::LSHIndex * index,
+				unsigned int size,
+				math::Vector::v_val * data
 				 ) {
 		
 		math::Vector vec (size, data);
-		return &((rsvidx::LSHIndex*)index)->get(vec)[0];
+		core::Array<ID> result = index->get(vec);
 		
+		core::Array<ID> * out = new core::Array<ID>(result.size());
+		memmove(&(out->operator[](0)), &(result[0]), sizeof(ID) * result.size());
 		
+		return out;
+	}
+	
+	void close(rsvidx::LSHIndex * pointer) {
+		delete pointer;
 	}
 	
 	

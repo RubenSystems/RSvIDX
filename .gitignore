@@ -1,2 +1,4 @@
 working_data/
 bin/
+*.o
+*.so

@@ -1,8 +1,7 @@
 
-COMPILER=clang++
-CCFLAGS=-Wall
+COMPILER = clang++
+CXXFLAGS=-Wall -std=c++11 -fPIC
 
-HEADERS=$(wildcard headers/*.hpp)
 SOURCES=$(wildcard src/*.cpp)
 
 all:
