@@ -17,7 +17,7 @@ namespace rsvidx {
 		typedef float orderednode_val;
 		
 		ID id;
-		float data;
+		orderednode_val data;
 	};
 	
 	class OrderedIndex: public PersistantArray<OrderedIndexNode> {
@@ -25,11 +25,6 @@ namespace rsvidx {
 		public:
 			OrderedIndex();
 		
-			/*
-			 
-			 These functions will return *than or equal to
-			 
-			 */
 			core::Array<OrderedIndexNode> getGreaterThan(OrderedIndexNode::orderednode_val);
 		
 			core::Array<OrderedIndexNode> getLessThan(OrderedIndexNode::orderednode_val);

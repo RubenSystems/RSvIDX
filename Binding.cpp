@@ -12,6 +12,7 @@
 
 
 #include "headers/LSHIndex.hpp"
+#include "headers/OrderedIndex.hpp"
 
 #include "Output.h"
 
@@ -83,6 +84,54 @@ extern "C" {
 	
 	void close(rsvidx::LSHIndex * pointer) {
 		delete pointer;
+	}
+	
+	/*
+	 Bindings for OrderedIndex
+	 */
+	rsvidx::OrderedIndex * ordered() {
+		return new rsvidx::OrderedIndex;
+	}
+	
+	void insert(
+				rsvidx::OrderedIndex * index,
+				const char * id,
+				rsvidx::OrderedIndexNode::orderednode_val data) {
+		
+		rsvidx::OrderedIndexNode insert;
+		insert.id = ID(id);
+		insert.data = data;
+		
+		
+		index->insert(insert);
+	}
+	
+	core::Array<rsvidx::OrderedIndexNode> * ordered_get_greater(
+																rsvidx::OrderedIndex * index,
+																rsvidx::OrderedIndexNode::orderednode_val forValue
+																) {
+		core::Array<rsvidx::OrderedIndexNode> result = index->getGreaterThan(forValue);
+		
+		core::Array<rsvidx::OrderedIndexNode> * toReturn = new core::Array<rsvidx::OrderedIndexNode>(result.size());
+		
+		memmove(&(toReturn->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::OrderedIndexNode));
+		
+		return toReturn;
+		
+		
+		
+	}
+	
+	core::Array<rsvidx::OrderedIndexNode> * ordered_get_less(rsvidx::OrderedIndex * index,
+															 rsvidx::OrderedIndexNode::orderednode_val forValue
+															 ) {
+		core::Array<rsvidx::OrderedIndexNode> result = index->getLessThan(forValue);
+		
+		core::Array<rsvidx::OrderedIndexNode> * toReturn = new core::Array<rsvidx::OrderedIndexNode>(result.size());
+		
+		memmove(&(toReturn->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::OrderedIndexNode));
+		
+		return toReturn;
 	}
 	
 	
