@@ -20,17 +20,27 @@
 extern "C" {
 
 	/*
-	 Bindings for ID
+	 Required bindings for OrderedNode
 	 */
-	const char * id_data(ID * id) {
-		return id->data;
+	const char * ordered_node_get_id(rsvidx::OrderedIndexNode * node) {
+		return node->id.data;
 	}
+	
+	rsvidx::OrderedIndexNode::orderednode_val ordered_node_get_value(rsvidx::OrderedIndexNode * node) {
+		return node->data;
+	}
+	
+	
 	
 	/*
 	 Required Bindings for Array
 	 */
 	const char * array_get_id(core::Array<ID> * array, int index) {
 		return (const char *)&(array->operator[](index).data);
+	}
+
+	void * array_get_node(core::Array<rsvidx::OrderedIndexNode> * array, int index) {
+		return &(array->operator[](index));
 	}
 
 	
