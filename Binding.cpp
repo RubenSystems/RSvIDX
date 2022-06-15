@@ -13,6 +13,8 @@
 
 #include "headers/LSHIndex.hpp"
 #include "headers/OrderedIndex.hpp"
+#include "headers/InvertedIndex.hpp"
+
 
 #include "Output.h"
 
@@ -28,6 +30,10 @@ extern "C" {
 	
 	rsvidx::OrderedIndexNode::orderednode_val ordered_node_get_value(rsvidx::OrderedIndexNode * node) {
 		return node->data;
+	}
+	
+	const char * inverted_result_get_id(core::Array<rsvidx::InvertedIndexNode> * result, unsigned int index) {
+		return result->operator[](index).id.data; 
 	}
 	
 	
@@ -143,6 +149,42 @@ extern "C" {
 		
 		return toReturn;
 	}
+	
+	/*
+	 Bindings for InvertedIndex
+	 */
+	
+	/**
+	 Create inverted index.
+	 
+	 - parameter buckets: the number of buckets.
+	 - parameter foldername: the folder (not file as it will create the file) name of the index
+	 - returns: a pointer to an index
+	 - warning: pointer must be freed using close
+
+	 */
+	rsvidx::InvertedIndex * inverted(int buckets, const char * foldername) {
+		rsvidx::InvertedIndex * index = new rsvidx::InvertedIndex(buckets);
+		index->setFoldername(foldername);
+		
+		return index;
+	}
+	
+	//get add remove
+	void inverted_add(rsvidx::InvertedIndex * index,  const char * data, const char * id) {
+		index->add({ID(id), data});
+	}
+	
+	core::Array<rsvidx::InvertedIndexNode> * inverted_get(rsvidx::InvertedIndex * index,  const char * data, const char * id) {
+		core::Array<rsvidx::InvertedIndexNode> result = index->get(data);
+		
+		core::Array<rsvidx::InvertedIndexNode> * returnval = new core::Array<rsvidx::InvertedIndexNode>(result.size());
+		
+		memmove(&(returnval->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::InvertedIndexNode));
+		
+		return returnval;
+	}
+	
 	
 	
 }

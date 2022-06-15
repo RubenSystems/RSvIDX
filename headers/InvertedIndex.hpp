@@ -14,26 +14,31 @@
 #include "ID.hpp"
 #include <stdio.h>
 
-struct InvertedIndexNode {
-	
-	
-	InvertedIndexNode() {}
-	
-	InvertedIndexNode(ID n_id, const char * n_data) : id(n_id){
-		memcpy(data, n_data, STRING_SIZE * sizeof(char));
-	}
-	
-	InvertedIndexNode(const InvertedIndexNode & other){
-		id = other.id;
-		
-		memcpy(data, other.data, STRING_SIZE * sizeof(char));
-	}
-	
-	ID id;
-	char data[STRING_SIZE];
-};
+
 
 namespace rsvidx {
+	
+	struct InvertedIndexNode {
+		
+		
+		InvertedIndexNode() {}
+		
+		
+		InvertedIndexNode(ID n_id, const char * n_data) : id(n_id){
+			memcpy(data, n_data, STRING_SIZE * sizeof(char));
+		}
+		
+		InvertedIndexNode(const InvertedIndexNode & other){
+			id = other.id;
+			
+			memcpy(data, other.data, STRING_SIZE * sizeof(char));
+		}
+		
+		ID id;
+		char data[STRING_SIZE];
+	};
+	
+	
 	class InvertedIndex: public PersistantMultimap<InvertedIndexNode> {
 		
 		public:
@@ -41,13 +46,13 @@ namespace rsvidx {
 		
 			void add(InvertedIndexNode);
 		
-			const char * get(const ID &);
+			core::Array<InvertedIndexNode> get(const char *);
 		
 			void remove(const ID &);
 		
 		private:
 		
-			unsigned int hash(const ID & );
+			unsigned int hash(const char * );
 		
 			
 			

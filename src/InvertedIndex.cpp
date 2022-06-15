@@ -16,35 +16,37 @@ InvertedIndex::InvertedIndex (int bucketCount) : PersistantMultimap<InvertedInde
 
 
 void InvertedIndex::add(InvertedIndexNode item) {
-	int index = hash(item.id);
+	int index = hash((const char *)&(item.data[0]));
 	this->PersistantMultimap<InvertedIndexNode>::add(index, item);
 }
 
-const char * InvertedIndex::get(const ID & id) {
-	int index = hash(id);
+core::Array<InvertedIndexNode> InvertedIndex::get(const char * data) {
+	int index = hash(data);
 	core::Array<InvertedIndexNode> * result = this->PersistantMultimap<InvertedIndexNode>::get(index);
+	core::Array<InvertedIndexNode> results;
 	for(int i = 0; i < result->size(); i ++) {
 		InvertedIndexNode & item = result->operator[](i);
-		out(item.id.data);
-		if (item.id == id) {
-			return item.data;
+		
+		if (item.data == data) {
+			results.add(item);
 		}
 	}
-	return nullptr;
+	return results;
 }
 
 void InvertedIndex::remove(const ID & id) {
-	
+	// TODO: implement
+	throw std::runtime_error("Stub not implemented");
 }
 
-unsigned int InvertedIndex::hash(const ID & id) {
+unsigned int InvertedIndex::hash(const char * data) {
 	//	DJB2 algo;
 	unsigned int hash;
 	int c;
 
 	hash = 5381;
-	for (int i = 0; i < ID::idsize; i ++) {
-		c = id.data[i];
+	for (int i = 0; i < strlen(data); i ++) {
+		c = data[i];
 		hash = ((hash << 5) + hash) + c;
 		/* hash * 33 + c */
 	}
