@@ -32,21 +32,32 @@ extern "C" {
 		return node->data;
 	}
 	
-	const char * inverted_result_get_id(core::Array<rsvidx::InvertedIndexNode> * result, unsigned int index) {
-		return result->operator[](index).id.data; 
-	}
+	
 	
 	
 	
 	/*
-	 Required Bindings for Array
+	 Required Bindings for Result arrays
 	 */
-	const char * array_get_id(core::Array<ID> * array, int index) {
+	
+	int lsh_result_get_size(core::Array<ID> * array) {
+		return array->size();
+	}
+	
+	const char * lsh_result_get_id(core::Array<ID> * array, int index) {
 		return (const char *)&(array->operator[](index).data);
 	}
+	
+	void lsh_result_delete(core::Array<ID> * array) {
+		delete array;
+	}
 
-	void * array_get_node(core::Array<rsvidx::OrderedIndexNode> * array, int index) {
+	void * ordered_result_get_node(core::Array<rsvidx::OrderedIndexNode> * array, int index) {
 		return &(array->operator[](index));
+	}
+	
+	const char * inverted_result_get_id(core::Array<rsvidx::InvertedIndexNode> * result, unsigned int index) {
+		return result->operator[](index).id.data;
 	}
 
 	
@@ -93,7 +104,7 @@ extern "C" {
 		core::Array<ID> result = index->get(vec);
 		
 		core::Array<ID> * out = new core::Array<ID>(result.size());
-		memmove(&(out->operator[](0)), &(result[0]), sizeof(ID) * result.size());
+		out->emplaceBack(&result);
 		
 		return out;
 	}
@@ -130,7 +141,8 @@ extern "C" {
 		
 		core::Array<rsvidx::OrderedIndexNode> * toReturn = new core::Array<rsvidx::OrderedIndexNode>(result.size());
 		
-		memmove(&(toReturn->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::OrderedIndexNode));
+		toReturn->emplaceBack(&result);
+//		memmove(&(toReturn->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::OrderedIndexNode));
 		
 		return toReturn;
 		
@@ -145,7 +157,8 @@ extern "C" {
 		
 		core::Array<rsvidx::OrderedIndexNode> * toReturn = new core::Array<rsvidx::OrderedIndexNode>(result.size());
 		
-		memmove(&(toReturn->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::OrderedIndexNode));
+		toReturn->emplaceBack(&result);
+//		memmove(&(toReturn->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::OrderedIndexNode));
 		
 		return toReturn;
 	}
@@ -180,7 +193,8 @@ extern "C" {
 		
 		core::Array<rsvidx::InvertedIndexNode> * returnval = new core::Array<rsvidx::InvertedIndexNode>(result.size());
 		
-		memmove(&(returnval->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::InvertedIndexNode));
+		returnval->emplaceBack(&result);
+//		memmove(&(returnval->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::InvertedIndexNode));
 		
 		return returnval;
 	}

@@ -19,9 +19,7 @@
 using namespace std::chrono;
 
 
-
 int main(int argc, const char * argv[]) {
-	
 	
 	rsvidx::LSHIndex * x = lsh(10, 2, "test");
 	
