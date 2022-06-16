@@ -31,6 +31,8 @@ RSvIDX is a distributable system. Since the indexes are independent of one anoth
 ### Fast and efficient
 RSvIDX has it’s own math library for ultra efficient and low energy computations. Since it is written in c++ with c bindings, it runs on several devices, from mobile phones to servers. 
 
+### Bindings 
+RSvIDX has C bindings, Python bindings (in a C style) and Python bindings (in a Python style).
 
 ### Example:
 Try out https://apps.apple.com/gb/app/headlines-today/id1363257410 on the App Store for a semantic search example. 
