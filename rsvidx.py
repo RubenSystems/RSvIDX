@@ -2,7 +2,7 @@ from ctypes import *
 
 rsvidx = CDLL('bin/rsvidx.so')
 
-
+""" Function arg/ret for lsh index """
 rsvidx.lsh_result_get_size.argtypes = [c_void_p]
 rsvidx.lsh_result_get_size.restype = c_int
 
@@ -28,10 +28,11 @@ rsvidx.lsh_get.argtypes = [c_void_p, c_uint, POINTER(c_float)]
 rsvidx.lsh_get.restype = c_void_p
 
 
-rsvidx.close.argtypes = [c_void_p]
-rsvidx.close.restype = None
+rsvidx.close_lsh.argtypes = [c_void_p]
+rsvidx.close_lsh.restype = None
 
 
+""" Wrapper for lsh index """
 class Similarity:
 
 	_index = None
@@ -57,15 +58,64 @@ class Similarity:
 
 
 	def __del__(self):
-		rsvidx.close(self._index)
+		rsvidx.close_lsh(self._index)
 
 
+""" Function arg/ret for ordered index """
+rsvidx.ordered.argtypes = None
+rsvidx.ordered.restype = c_void_p
 
-index = Similarity(10, 2, "bin/test")
-# index.add("abc", [1,9])
-print(index.get([-20,-49]))
+rsvidx.ordered_insert.argtypes = [c_void_p, c_char_p, c_float]
+rsvidx.ordered_insert.restype = None
 
+rsvidx.ordered_get_greater.argtypes = [c_void_p, c_float]
+rsvidx.ordered_get_greater.restype = c_void_p
 
+rsvidx.ordered_get_less.argtypes = [c_void_p, c_float]
+rsvidx.ordered_get_less.restype = c_void_p
+
+rsvidx.ordered_result_get_size.argtypes = [c_void_p]
+rsvidx.ordered_result_get_size.restype = c_int
+
+rsvidx.close_ordered.argtypes = [c_void_p]
+rsvidx.close_ordered.restype = None
+
+""" Wrapper for ordered index """
+class Ordered:
+	_index = None
+	
+	def __init__(self):
+		self._index = rsvidx.ordered()
+		
+	def insert(self, id: str, value: float):
+			array_pointer = (c_float*len(data))(*data)
+			rsvidx.insert(self._index, bytes(id, "utf-8"), value)
+			
+	def getGreater(self, value: float) -> str:
+		result = rsvidx.ordered_get_greater(self._index, value)
+		size = rsvidx.ordered_result_get_size(result)
+		return [
+			rsvidx.ordered_node_get_id(rsvidx.ordered_result_get_node(result, x)).decode()
+			for x in range(size)
+		]
+		
+	def getLess(self, value: float) -> str:
+		result = rsvidx.ordered_get_less(self._index, value)
+		size = rsvidx.ordered_result_get_size(result)
+		return [
+			rsvidx.ordered_node_get_id(rsvidx.ordered_result_get_node(result, x)).decode()
+			for x in range(size)
+		]
+		
+		
+		
+		
+		
+		
+		
+	def __del__(self):
+		rsvidx.close_ordered(self._index)
+	
 
 
 

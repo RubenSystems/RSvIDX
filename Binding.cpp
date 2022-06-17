@@ -44,12 +44,17 @@ extern "C" {
 		return array->size();
 	}
 	
+	
 	const char * lsh_result_get_id(core::Array<ID> * array, int index) {
 		return (const char *)&(array->operator[](index).data);
 	}
 	
 	void lsh_result_delete(core::Array<ID> * array) {
 		delete array;
+	}
+	
+	int ordered_result_get_size(core::Array<rsvidx::OrderedIndexNode> * array) {
+		return array->size();
 	}
 
 	void * ordered_result_get_node(core::Array<rsvidx::OrderedIndexNode> * array, int index) {
@@ -109,9 +114,7 @@ extern "C" {
 		return out;
 	}
 	
-	void close(rsvidx::LSHIndex * pointer) {
-		delete pointer;
-	}
+	
 	
 	/*
 	 Bindings for OrderedIndex
@@ -120,7 +123,7 @@ extern "C" {
 		return new rsvidx::OrderedIndex;
 	}
 	
-	void insert(
+	void ordered_insert(
 				rsvidx::OrderedIndex * index,
 				const char * id,
 				rsvidx::OrderedIndexNode::orderednode_val data) {
@@ -199,6 +202,20 @@ extern "C" {
 		return returnval;
 	}
 	
+	/*
+	 Cleanup functions
+	 */
+	void close_lsh(rsvidx::LSHIndex * pointer) {
+		delete pointer;
+	}
+	
+	void close_ordered(rsvidx::LSHIndex * pointer) {
+		delete pointer;
+	}
+	
+	void close_inverted(rsvidx::LSHIndex * pointer) {
+		delete pointer;
+	}
 	
 	
 }
