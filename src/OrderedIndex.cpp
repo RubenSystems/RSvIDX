@@ -19,6 +19,7 @@ namespace rsvidx {
 	}
 
 	core::Array<OrderedIndexNode> OrderedIndex::getLessThan(OrderedIndexNode::orderednode_val value) {
+		
 		unsigned int index = search(value);
 		return core::Array<OrderedIndexNode>(data, 0, index);
 	}

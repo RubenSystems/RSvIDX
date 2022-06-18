@@ -32,7 +32,23 @@ rsvidx.close_lsh.argtypes = [c_void_p]
 rsvidx.close_lsh.restype = None
 
 
-""" Wrapper for lsh index """
+"""
+
+Human:
+Wrapper for lsh index
+
+GPT-3:
+This is a class that allows you to perform similarity searches on a dataset.
+
+The constructor takes in the number of tables, dimensions, and filename.
+
+The get function takes in an array and returns a list of strings.
+
+The add function adds a uid and array.
+
+The remove function removes a uid and array.
+
+"""
 class Similarity:
 
 	_index = None
@@ -44,7 +60,10 @@ class Similarity:
 		array_pointer = (c_float*len(array))(*array)
 
 		result = rsvidx.lsh_get(self._index, len(array), array_pointer )
-		toReturn = [rsvidx.lsh_result_get_id(result, x).decode() for x in range(rsvidx.lsh_result_get_size(result))]
+		toReturn = [
+			rsvidx.lsh_result_get_id(result, x).decode()
+			for x in range(rsvidx.lsh_result_get_size(result))
+		]
 		rsvidx.lsh_result_delete(result)
 		return toReturn
 
@@ -62,7 +81,7 @@ class Similarity:
 
 
 """ Function arg/ret for ordered index """
-rsvidx.ordered.argtypes = None
+rsvidx.ordered.argtypes = [c_char_p]
 rsvidx.ordered.restype = c_void_p
 
 rsvidx.ordered_insert.argtypes = [c_void_p, c_char_p, c_float]
@@ -77,49 +96,72 @@ rsvidx.ordered_get_less.restype = c_void_p
 rsvidx.ordered_result_get_size.argtypes = [c_void_p]
 rsvidx.ordered_result_get_size.restype = c_int
 
-rsvidx.close_ordered.argtypes = [c_void_p]
+rsvidx.ordered_result_get_id.argtypes = [c_void_p, c_int]
+rsvidx.ordered_result_get_id.restype = c_char_p
+
+rsvidx.close_ordered.argtypes = [c_void_p, c_char_p]
 rsvidx.close_ordered.restype = None
 
 rsvidx.ordered_result_delete.argtypes = [c_void_p]
 rsvidx.ordered_result_delete.restype = None
 
-""" Wrapper for ordered index """
+"""
+
+Human:
+Wrapper for ordered index
+
+GPT-3:
+This class is an ordered index, which is used to store data so that it can be retrieved efficiently.
+
+ The insert function inserts a new value into the index
+ 
+ The getGreater function retrieves all values that are greater than a given value
+ 
+ The getLess function retrieves all values that are less than a given value.
+
+"""
 class Ordered:
+	_filename = None
 	_index = None
 	
-	def __init__(self):
-		self._index = rsvidx.ordered()
+	def __init__(self, filename):
+		self._filename = bytes(filename, "utf-8")
+		self._index = rsvidx.ordered(self._filename)
 		
 	def insert(self, id: str, value: float):
-			array_pointer = (c_float*len(data))(*data)
-			rsvidx.insert(self._index, bytes(id, "utf-8"), value)
+			rsvidx.ordered_insert(self._index, bytes(id, "utf-8"), value)
 			
-	""" Get any item greater than or equal to in the index """
 	def getGreater(self, value: float) -> str:
 		result = rsvidx.ordered_get_greater(self._index, value)
 		size = rsvidx.ordered_result_get_size(result)
 		toReturn = [
-			rsvidx.ordered_node_get_id(rsvidx.ordered_result_get_node(result, x)).decode()
+			rsvidx.ordered_result_get_id(result, x).decode()
 			for x in range(size)
 		]
 		
 		rsvidx.ordered_result_delete(result)
 		return toReturn
 		
-	""" Get any item less than or equal to in the index """
 	def getLess(self, value: float) -> str:
 		result = rsvidx.ordered_get_less(self._index, value)
+		
 		size = rsvidx.ordered_result_get_size(result)
+		
 		toReturn = [
-			rsvidx.ordered_node_get_id(rsvidx.ordered_result_get_node(result, x)).decode()
+			rsvidx.ordered_result_get_id(result, x).decode()
 			for x in range(size)
 		]
+		print("here")
 		rsvidx.ordered_result_delete(result)
 		return toReturn
 		
 	def __del__(self):
-		rsvidx.close_ordered(self._index)
+		rsvidx.close_ordered(self._index, self._filename)
 	
+
+
+
+
 
 """ Function arg/ret for inverted index """
 rsvidx.inverted.argtypes = [c_int, c_char_p]
@@ -132,25 +174,39 @@ rsvidx.inverted_get.argtypes = [c_void_p, c_char_p]
 rsvidx.inverted_get.restype = c_void_p
 
 rsvidx.inverted_result_get_size.argtypes = [c_void_p]
-rsvidx.inverted_result_get_size.restype = None
+rsvidx.inverted_result_get_size.restype = c_int
 
 rsvidx.inverted_result_get_id.argtypes = [c_void_p, c_int]
 rsvidx.inverted_result_get_id.restype = c_char_p
 
-rsvidx.inverted_add.argtypes = [c_void_p]
-rsvidx.inverted_add.restype = None
+rsvidx.inverted_result_delete.argtypes = [c_void_p]
+rsvidx.inverted_result_delete.restype = None
 
 rsvidx.close_inverted.argtypes = [c_void_p]
 rsvidx.close_inverted.restype = None
 
-""" Wrapper for Inverted index """
+"""
+
+Human:
+Wrapper for Inverted index
+
+GPT-3:
+This class is an inverted index, used for indexing document collections for fast document retrieval. It has three functions: __init__(), add(), and get().
+
+__init__() creates a new inverted index with a given number of buckets and foldername.
+
+add() adds a given document ID and data to the index.
+
+get() looks up a given data in the index and returns a list of document IDs associated with that data.
+
+"""
 class Inverted:
 	_index = None
 	
 	def __init__(self, buckets: int, foldername: str):
 		self._index = rsvidx.inverted(buckets, bytes(foldername, "utf-8"))
 		
-	def add(self, item: str, id: str, data: str):
+	def add(self, id: str, data: str):
 		rsvidx.inverted_add(self._index, bytes(data, "utf-8"), bytes(id, "utf-8"))
 		
 	def get(self, data: str) -> [str]:
@@ -159,7 +215,7 @@ class Inverted:
 		size = rsvidx.inverted_result_get_size(result)
 		
 		toReturn = [
-			inverted_result_get_id(result, x)
+			rsvidx.inverted_result_get_id(result, x).decode()
 			for x in range(size)
 		]
 		
@@ -170,12 +226,9 @@ class Inverted:
 		rsvidx.close_inverted(self._index)
 		
 		
-		
-		
-
-
-
-
+x = Inverted(1000, "bin/inverted/")
+x.add("123", "ruben")
+print(x.get("ruben"))
 
 
 

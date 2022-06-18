@@ -21,17 +21,7 @@
 
 extern "C" {
 
-	/*
-	 Required bindings for OrderedNode
-	 */
-	const char * ordered_node_get_id(rsvidx::OrderedIndexNode * node) {
-		return node->id.data;
-	}
-	
-	rsvidx::OrderedIndexNode::orderednode_val ordered_node_get_value(rsvidx::OrderedIndexNode * node) {
-		return node->data;
-	}
-	
+
 	
 	
 	
@@ -69,8 +59,8 @@ extern "C" {
 		return array->size();
 	}
 
-	void * ordered_result_get_node(core::Array<rsvidx::OrderedIndexNode> * array, int index) {
-		return &(array->operator[](index));
+	const char * ordered_result_get_id(core::Array<rsvidx::OrderedIndexNode> * array, int index) {
+		return (array->operator[](index).id.data);
 	}
 	
 	const char * inverted_result_get_id(core::Array<rsvidx::InvertedIndexNode> * result, unsigned int index) {
@@ -131,8 +121,11 @@ extern "C" {
 	/*
 	 Bindings for OrderedIndex
 	 */
-	rsvidx::OrderedIndex * ordered() {
-		return new rsvidx::OrderedIndex;
+	rsvidx::OrderedIndex * ordered(const char * filename) {
+		rsvidx::OrderedIndex * index = new rsvidx::OrderedIndex;
+		
+		index->load(filename);
+		return index;
 	}
 	
 	void ordered_insert(
@@ -143,7 +136,6 @@ extern "C" {
 		rsvidx::OrderedIndexNode insert;
 		insert.id = ID(id);
 		insert.data = data;
-		
 		
 		index->insert(insert);
 	}
@@ -199,7 +191,7 @@ extern "C" {
 	}
 	
 	//get add remove
-	void inverted_add(rsvidx::InvertedIndex * index,  const char * data, const char * id) {
+	void inverted_add(rsvidx::InvertedIndex * index, const char * data, const char * id) {
 		index->add({ID(id), data});
 	}
 	
@@ -207,6 +199,11 @@ extern "C" {
 		core::Array<rsvidx::InvertedIndexNode> result = index->get(data);
 		
 		core::Array<rsvidx::InvertedIndexNode> * returnval = new core::Array<rsvidx::InvertedIndexNode>(result.size());
+		
+		
+//		for(int i = 0; i < result.size(); i ++) {
+			out(result[0].data);
+//		}
 		
 		returnval->emplaceBack(&result);
 //		memmove(&(returnval->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::InvertedIndexNode));
@@ -221,11 +218,12 @@ extern "C" {
 		delete pointer;
 	}
 	
-	void close_ordered(rsvidx::LSHIndex * pointer) {
+	void close_ordered(rsvidx::OrderedIndex * pointer, const char * filename) {
+		pointer->save(filename);
 		delete pointer;
 	}
 	
-	void close_inverted(rsvidx::LSHIndex * pointer) {
+	void close_inverted(rsvidx::InvertedIndex * pointer) {
 		delete pointer;
 	}
 	

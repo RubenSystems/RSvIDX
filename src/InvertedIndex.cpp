@@ -16,7 +16,7 @@ InvertedIndex::InvertedIndex (int bucketCount) : PersistantMultimap<InvertedInde
 
 
 void InvertedIndex::add(InvertedIndexNode item) {
-	int index = hash((const char *)&(item.data[0]));
+	int index = hash(item.data);
 	this->PersistantMultimap<InvertedIndexNode>::add(index, item);
 }
 
@@ -27,7 +27,7 @@ core::Array<InvertedIndexNode> InvertedIndex::get(const char * data) {
 	for(int i = 0; i < result->size(); i ++) {
 		InvertedIndexNode & item = result->operator[](i);
 		
-		if (item.data == data) {
+		if (strcmp(item.data, data) == 0) {
 			results.add(item);
 		}
 	}
