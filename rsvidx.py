@@ -80,6 +80,9 @@ rsvidx.ordered_result_get_size.restype = c_int
 rsvidx.close_ordered.argtypes = [c_void_p]
 rsvidx.close_ordered.restype = None
 
+rsvidx.ordered_result_delete.argtypes = [c_void_p]
+rsvidx.ordered_result_delete.restype = None
+
 """ Wrapper for ordered index """
 class Ordered:
 	_index = None
@@ -91,33 +94,84 @@ class Ordered:
 			array_pointer = (c_float*len(data))(*data)
 			rsvidx.insert(self._index, bytes(id, "utf-8"), value)
 			
+	""" Get any item greater than or equal to in the index """
 	def getGreater(self, value: float) -> str:
 		result = rsvidx.ordered_get_greater(self._index, value)
 		size = rsvidx.ordered_result_get_size(result)
-		return [
+		toReturn = [
 			rsvidx.ordered_node_get_id(rsvidx.ordered_result_get_node(result, x)).decode()
 			for x in range(size)
 		]
 		
+		rsvidx.ordered_result_delete(result)
+		return toReturn
+		
+	""" Get any item less than or equal to in the index """
 	def getLess(self, value: float) -> str:
 		result = rsvidx.ordered_get_less(self._index, value)
 		size = rsvidx.ordered_result_get_size(result)
-		return [
+		toReturn = [
 			rsvidx.ordered_node_get_id(rsvidx.ordered_result_get_node(result, x)).decode()
 			for x in range(size)
 		]
-		
-		
-		
-		
-		
-		
+		rsvidx.ordered_result_delete(result)
+		return toReturn
 		
 	def __del__(self):
 		rsvidx.close_ordered(self._index)
 	
 
+""" Function arg/ret for inverted index """
+rsvidx.inverted.argtypes = [c_int, c_char_p]
+rsvidx.inverted.restype = c_void_p
 
+rsvidx.inverted_add.argtypes = [c_void_p, c_char_p, c_char_p]
+rsvidx.inverted_add.restype = None
+
+rsvidx.inverted_get.argtypes = [c_void_p, c_char_p]
+rsvidx.inverted_get.restype = c_void_p
+
+rsvidx.inverted_result_get_size.argtypes = [c_void_p]
+rsvidx.inverted_result_get_size.restype = None
+
+rsvidx.inverted_result_get_id.argtypes = [c_void_p, c_int]
+rsvidx.inverted_result_get_id.restype = c_char_p
+
+rsvidx.inverted_add.argtypes = [c_void_p]
+rsvidx.inverted_add.restype = None
+
+rsvidx.close_inverted.argtypes = [c_void_p]
+rsvidx.close_inverted.restype = None
+
+""" Wrapper for Inverted index """
+class Inverted:
+	_index = None
+	
+	def __init__(self, buckets: int, foldername: str):
+		self._index = rsvidx.inverted(buckets, bytes(foldername, "utf-8"))
+		
+	def add(self, item: str, id: str, data: str):
+		rsvidx.inverted_add(self._index, bytes(data, "utf-8"), bytes(id, "utf-8"))
+		
+	def get(self, data: str) -> [str]:
+		result = rsvidx.inverted_get(self._index, bytes(data, "utf-8"))
+		
+		size = rsvidx.inverted_result_get_size(result)
+		
+		toReturn = [
+			inverted_result_get_id(result, x)
+			for x in range(size)
+		]
+		
+		rsvidx.inverted_result_delete(result)
+		return toReturn
+		
+	def __del__(self):
+		rsvidx.close_inverted(self._index)
+		
+		
+		
+		
 
 
 

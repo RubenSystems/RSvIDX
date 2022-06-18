@@ -44,12 +44,24 @@ extern "C" {
 		return array->size();
 	}
 	
+	int inverted_result_get_size(core::Array<rsvidx::InvertedIndexNode> * array) {
+		return array->size();
+	}
+	
 	
 	const char * lsh_result_get_id(core::Array<ID> * array, int index) {
 		return (const char *)&(array->operator[](index).data);
 	}
 	
 	void lsh_result_delete(core::Array<ID> * array) {
+		delete array;
+	}
+	
+	void ordered_result_delete(core::Array<rsvidx::OrderedIndexNode> * array) {
+		delete array;
+	}
+	
+	void inverted_result_delete(core::Array<rsvidx::InvertedIndexNode> * array) {
 		delete array;
 	}
 	
@@ -191,7 +203,7 @@ extern "C" {
 		index->add({ID(id), data});
 	}
 	
-	core::Array<rsvidx::InvertedIndexNode> * inverted_get(rsvidx::InvertedIndex * index,  const char * data, const char * id) {
+	core::Array<rsvidx::InvertedIndexNode> * inverted_get(rsvidx::InvertedIndex * index,  const char * data) {
 		core::Array<rsvidx::InvertedIndexNode> result = index->get(data);
 		
 		core::Array<rsvidx::InvertedIndexNode> * returnval = new core::Array<rsvidx::InvertedIndexNode>(result.size());
