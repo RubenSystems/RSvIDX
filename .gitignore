@@ -2,3 +2,4 @@ working_data/
 bin/
 *.o
 *.so
+main.cpp
