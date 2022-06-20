@@ -1,4 +1,5 @@
 from ctypes import *
+import json
 
 rsvidx = CDLL('bin/rsvidx.so')
 
@@ -225,18 +226,97 @@ class Inverted:
 	def __del__(self):
 		rsvidx.close_inverted(self._index)
 		
+
+
+""" Function arg/ret for datastore """
+rsvidx.datastore.argtypes = [c_char_p]
+rsvidx.datastore.restype = c_void_p
+
+rsvidx.datastore_add.argtypes = [c_void_p, c_char_p, c_char_p, c_void_p, c_int]
+rsvidx.datastore_add.restype = c_void_p
+
+rsvidx.datastore_result_delete.argtypes = [c_void_p]
+rsvidx.datastore_result_delete.restype = None
+
+rsvidx.datastore_get.argtypes = [c_void_p, c_char_p]
+rsvidx.datastore_get.restype = c_void_p
+
+rsvidx.datastore_result_get_data.argtypes = [c_void_p]
+rsvidx.datastore_result_get_data.restype = c_char_p
 		
-x = Inverted(1000, "bin/inverted/")
-x.add("123", "ruben")
-print(x.get("ruben"))
+rsvidx.datastore_result_get_vec_size.argtypes = [c_void_p]
+rsvidx.datastore_result_get_vec_size.restype = c_int
+
+rsvidx.datastore_result_get_vec.argtypes = [c_void_p, c_int]
+rsvidx.datastore_result_get_vec.restype = c_float
+		
+rsvidx.datastore_result_delete.argtypes = [c_void_p]
+rsvidx.datastore_result_delete.restype = None
+		
+rsvidx.close_datastore.argtypes = [c_void_p]
+rsvidx.close_datastore.restype = None
+
+
+"""
+
+Human:
+Wrapper for datastore. 
+
+GPT-3:
+This is the DataStore class. It is used to store data in a file.
+
+The class has three methods.
+
+The first method is used to add data to the datastore.
+The second method is used to get data from the datastore.
+The third method is used to delete the datastore.
+"""
+
+class DataStore:
+
+	_index = None
+
+	def __init__(self, filename: str):
+		self._index = rsvidx.datastore(bytes(filename, "utf-8"))
+		
+	def add(self, id: str, data: dict, vector: [float]):
+		vector_p = (c_float * len(vector))(*vector)
+	
+		rsvidx.datastore_add(
+			self._index,
+			bytes(id, "utf-8"),
+			bytes(json.dumps(data), "utf-8"),
+			vector_p,
+			len(vector)
+		)
+			
+		
+		
+	def get(self, id: str) -> (dict, [float]):
+		record = rsvidx.datastore_get(self._index, bytes(id, "utf-8"))
+		data = json.loads(rsvidx.datastore_result_get_data(record).decode())
+		vectorSize = rsvidx.datastore_result_get_vec_size(record)
+		vector = [
+			rsvidx.datastore_result_get_vec(record, x)
+			for x in range(vectorSize)
+		]
+		
+		rsvidx.datastore_result_delete(record)
+		
+		return data, vector
+		
+		
+	def __del__(self):
+		rsvidx.close_datastore(self._index)
+		
 
 
 
+x = DataStore("bin/ruben/")
 
+x.add("234", {"awsomeYEA": "yeah!"}, [1,2,3,6])
 
-
-
-
+print(x.get("234"))
 
 
 

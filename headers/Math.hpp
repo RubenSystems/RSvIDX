@@ -83,11 +83,7 @@ namespace math {
 			v_val & operator[](unsigned int index);
 		
 			unsigned int size() const;
-		
-			/*
-			 Don't use this;
-			 */
-			v_val * getbuffer() const;
+
 		
 		private:
 			v_val * data;

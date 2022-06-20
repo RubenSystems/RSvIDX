@@ -15,26 +15,43 @@
 #include "../Output.h"
 
 namespace rsvidx {
-	
+	/*
+	 This is ugly and coupled too tightly to vector
+	 */
 	struct Record {
 
 		Record () = default;
 		
-		Record(const ID & id, const std::string & data):
+		Record(const ID & id, const std::string & data, int vectorsize, math::Vector::v_val * vec):
 			id (id), data(data) {
 				size.data = (int)data.size();
+				size.vector = vectorsize;
+				setVector(vectorsize, vec);
+				
+		}
+		
+		void setVector(int vectorsize, math::Vector::v_val * vec) {
+			allocateVector(vectorsize);
+			memmove(vector, vec, sizeof(math::Vector::v_val) * vectorsize);
+		}
+		
+		void allocateVector(int size) {
+			vector = new math::Vector::v_val [size];
 		}
 		
 		~Record() {
+			delete [] vector;
 		}
 		
 		ID id;
 
 		struct {
 			int data;
+			int vector;
 		} size;
 		
 		std::string data;
+		math::Vector::v_val * vector = nullptr;
 	};
 	
 	class DataStore {
@@ -42,9 +59,9 @@ namespace rsvidx {
 			
 			DataStore(const std::string & );
 		
-			void set(const Record &);
+			void set(Record &);
 		
-			Record get(const ID &);
+			void get(const ID &, Record &);
 		
 		private:
 			std::string foldername;

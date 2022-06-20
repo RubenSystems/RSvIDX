@@ -126,10 +126,11 @@ namespace math {
 		memmove(data, n_data, size * sizeof(v_val));
 	}
 	
-	Vector::Vector() : d_size(0), data(0) {}
+	Vector::Vector() : d_size(0), data(nullptr) {}
 	
 	Vector::~Vector(){
-		if (d_size != 0){
+		if (data != nullptr){
+			out(d_size);
 			delete [] data;
 		}
 	}
@@ -141,10 +142,7 @@ namespace math {
 	Vector::v_val & Vector::operator[](unsigned int index) {
 		return this->data[index];
 	}
-	
-	Vector::v_val * Vector::getbuffer() const {
-		return this->data;
-	}
+
 	
 	unsigned int Vector::size() const {
 		return this->d_size;

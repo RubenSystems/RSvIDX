@@ -14,7 +14,7 @@
 #include "headers/LSHIndex.hpp"
 #include "headers/OrderedIndex.hpp"
 #include "headers/InvertedIndex.hpp"
-
+#include "headers/DataStore.hpp"
 
 #include "Output.h"
 
@@ -212,6 +212,48 @@ extern "C" {
 	}
 	
 	/*
+	 Bindings for datastore
+	 */
+	
+	rsvidx::DataStore * datastore(const char * filename) {
+		return new rsvidx::DataStore(filename);
+	}
+	
+	void datastore_add(rsvidx::DataStore * index, const char * id, const char * data, math::Vector::v_val * vector, int vectorSize) {
+		
+		rsvidx::Record record(ID(id), data, vectorSize, vector);
+		
+		index->set(record);
+		
+	}
+	
+	rsvidx::Record * datastore_get(rsvidx::DataStore * index, const char * id) {
+		rsvidx::Record * record = new rsvidx::Record();
+		
+		index->get(ID(id), *record);
+
+		return record;
+	}
+	
+	const char * datastore_result_get_data(rsvidx::Record * record) {
+		return record->data.c_str();
+	}
+	
+	int datastore_result_get_vec_size(rsvidx::Record * record) {
+		return record->size.vector;
+	}
+	
+	math::Vector::v_val datastore_result_get_vec(rsvidx::Record * record, int index) {
+
+		return record->vector[index];
+	}
+	
+	void datastore_result_delete(rsvidx::Record * array) {
+		delete array;
+	}
+	
+	
+	/*
 	 Cleanup functions
 	 */
 	void close_lsh(rsvidx::LSHIndex * pointer) {
@@ -224,6 +266,10 @@ extern "C" {
 	}
 	
 	void close_inverted(rsvidx::InvertedIndex * pointer) {
+		delete pointer;
+	}
+	
+	void close_datastore(rsvidx::DataStore * pointer) {
 		delete pointer;
 	}
 	

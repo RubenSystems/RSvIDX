@@ -21,11 +21,17 @@ using namespace std::chrono;
 
 int main(int argc, const char * argv[]) {
 	
-	rsvidx::LSHIndex * x = lsh(10, 2, "test");
 	
-	float v_vals [] = {1,2};
-	lsh_add(x, "1", 2, v_vals);
+	rsvidx::DataStore store("storetest/");
 	
+	float data [] = {12,34};
+	rsvidx::Record rec(ID("HELLO"), "hello there", 2, data);
+	
+	store.set(rec);
+	
+	rsvidx::Record x;
+	store.get(ID("HELLO"), x);
+	out(x.data);
 	
 	
 	return 0;

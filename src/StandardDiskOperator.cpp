@@ -9,7 +9,10 @@
 #include <fstream>
 #include <sstream>
 #include "../Output.h"
+#include <filesystem>
 #include <sys/stat.h>
+
+namespace fs = std::__fs::filesystem;
 
 namespace rsvidx {
 	void StandardDiskOperator::open(const char * filename, OpenType type){
@@ -65,15 +68,14 @@ namespace rsvidx {
 	}
 	
 	void StandardDiskOperator::createDirectory(const char * forString) {
-			std::string fullDirectory = strippingFilenames(forString);
-			if(fileExists(fullDirectory)) {
-				return;
-			}
-			
-			std::string command = "mkdir -p " + fullDirectory;
-			char charArr[command.length() + 1];
-			strcpy(charArr, command.c_str());
-			
-			std::system(charArr);
+		std::string fullDirectory = strippingFilenames(forString);
+		if(fileExists(fullDirectory)) {
+			return;
 		}
+		
+		fs::create_directories(fullDirectory);
+		//		Error handling
+		//			throw std::runtime_error("[FILE] - unable to create full directory " + std::string(fullDirectory));
+		//		}
+	}
 }

@@ -13,7 +13,7 @@ namespace rsvidx {
 	DataStore::DataStore(const std::string & foldername) :
 		foldername(foldername) {}
 	
-	void DataStore::set(const Record & record) {
+	void DataStore::set(Record & record) {
 		StandardDiskOperator file = StandardDiskOperator();
 		file.open((foldername + record.id.data + ".rsrecord").c_str(), DiskOperator::OpenType::WRITE);
 		int currentPosition = 0;
@@ -28,22 +28,19 @@ namespace rsvidx {
 		currentPosition += sizeof(record.size);
 
 		file.seek(currentPosition);
-
 		file.write((void *)&record.data[0], record.size.data * sizeof(char));
 		currentPosition += record.size.data * sizeof(char);
 		
-//		file.seek(currentPosition);
-//		file.write(record.vector.getbuffer(), record.vector.size() * sizeof(math::Vector::v_val));
+		file.seek(currentPosition);
+		file.write(record.vector, record.size.vector * sizeof(math::Vector::v_val));
 
 		file.close();
 	}
 	
-	Record DataStore::get(const ID & id) {
+	void DataStore::get(const ID & id, Record & record) {
 		StandardDiskOperator file = StandardDiskOperator();
 		file.open((foldername + id.data + ".rsrecord").c_str(), DiskOperator::OpenType::READ);
-		
-		Record record;
-		
+				
 		int currentPosition = 0;
 
 		file.seek(currentPosition);
@@ -58,17 +55,15 @@ namespace rsvidx {
 		file.seek(currentPosition);
 		record.data.resize(record.size.data);
 		file.read((void *)&record.data[0], sizeof(char) * record.size.data);
+		currentPosition += sizeof(char) * record.size.data;
 		
 		
-//		math::Vector(record.size.vector);
-//		
-//		file.seek(currentPosition);
-//		file.read(record.vector.getbuffer(), record.vector.size() * sizeof(math::Vector::v_val));
 
+		file.seek(currentPosition);
+		record.allocateVector(record.size.vector);
+		file.read(record.vector, record.size.vector * sizeof(math::Vector::v_val));
+		
+		
 		file.close();
-		
-		
-		return record;
-		
 	}
 }
