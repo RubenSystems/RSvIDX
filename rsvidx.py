@@ -308,16 +308,4 @@ class DataStore:
 		
 	def __del__(self):
 		rsvidx.close_datastore(self._index)
-		
-
-
-
-x = DataStore("bin/ruben/")
-
-x.add("234", {"awsomeYEA": "yeah!"}, [1,2,3,6])
-
-print(x.get("234"))
-
-
-
 
