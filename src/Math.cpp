@@ -130,7 +130,6 @@ namespace math {
 	
 	Vector::~Vector(){
 		if (data != nullptr){
-			out(d_size);
 			delete [] data;
 		}
 	}

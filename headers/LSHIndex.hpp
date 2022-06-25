@@ -37,11 +37,8 @@ namespace rsvidx {
 		
 			void remove(math::Vector &, ID);
 					
-		void outInfo(){
-			out(numberOfTables);
-		}
-		
-//		private:
+
+		private:
 		int numberOfTables, dimensions;
 		LSHTable ** tables;
 	};
