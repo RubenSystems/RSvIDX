@@ -200,15 +200,17 @@ extern "C" {
 		
 		core::Array<rsvidx::InvertedIndexNode> * returnval = new core::Array<rsvidx::InvertedIndexNode>(result.size());
 		
-		
-//		for(int i = 0; i < result.size(); i ++) {
-			out(result[0].data);
-//		}
+
 		
 		returnval->emplaceBack(&result);
 //		memmove(&(returnval->operator[](0)), &(result[0]), result.size() * sizeof(rsvidx::InvertedIndexNode));
 		
 		return returnval;
+	}
+	
+	void inverted_remove(rsvidx::InvertedIndex * index, const char * id, const char * data) {
+		rsvidx::InvertedIndexNode node = {ID(id), data};
+		index->remove(node);
 	}
 	
 	/*

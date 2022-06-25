@@ -63,6 +63,8 @@ namespace rsvidx {
 		
 			void get(const ID &, Record &);
 		
+			void remove(const ID &);
+		
 		private:
 			std::string foldername;
 			

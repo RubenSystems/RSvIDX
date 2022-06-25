@@ -72,7 +72,7 @@ class Similarity:
 		array_pointer = (c_float*len(array))(*array)
 		rsvidx.lsh_add(self._index, bytes(uid, "utf-8"), len(array), array_pointer)
 
-	def remove(self, uid: str, array: [float]): 
+	def remove(self, uid: str, array: [float]):
 		array_pointer = (c_float*len(array))(*array)
 		rsvidx.lsh_remove(self._index, bytes(uid, "utf-8"), len(array), array_pointer)
 
@@ -152,7 +152,6 @@ class Ordered:
 			rsvidx.ordered_result_get_id(result, x).decode()
 			for x in range(size)
 		]
-		print("here")
 		rsvidx.ordered_result_delete(result)
 		return toReturn
 		
@@ -170,6 +169,9 @@ rsvidx.inverted.restype = c_void_p
 
 rsvidx.inverted_add.argtypes = [c_void_p, c_char_p, c_char_p]
 rsvidx.inverted_add.restype = None
+
+rsvidx.inverted_remove.argtypes = [c_void_p, c_char_p, c_char_p]
+rsvidx.inverted_remove.restype = None
 
 rsvidx.inverted_get.argtypes = [c_void_p, c_char_p]
 rsvidx.inverted_get.restype = c_void_p
@@ -223,6 +225,10 @@ class Inverted:
 		rsvidx.inverted_result_delete(result)
 		return toReturn
 		
+	def remove(self, id: str, data: str):
+		rsvidx.inverted_remove(self._index, bytes(id, "utf-8"), bytes(data, "utf-8"))
+		
+		
 	def __del__(self):
 		rsvidx.close_inverted(self._index)
 		
@@ -260,7 +266,7 @@ rsvidx.close_datastore.restype = None
 """
 
 Human:
-Wrapper for datastore. 
+Wrapper for datastore.
 
 GPT-3:
 This is the DataStore class. It is used to store data in a file.

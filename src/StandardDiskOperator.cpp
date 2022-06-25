@@ -11,6 +11,7 @@
 #include "../Output.h"
 #include <filesystem>
 #include <sys/stat.h>
+#include <stdio.h>
 
 namespace fs = std::__fs::filesystem;
 
@@ -77,5 +78,11 @@ namespace rsvidx {
 		//		Error handling
 		//			throw std::runtime_error("[FILE] - unable to create full directory " + std::string(fullDirectory));
 		//		}
+	}
+	
+	void StandardDiskOperator::remove(const char * filename) {
+		if( ::remove( filename ) != 0 ) {
+			throw std::runtime_error("[DELETE] - error deleting file");
+		}
 	}
 }

@@ -29,6 +29,8 @@ namespace rsvidx {
 		
 			bool exists(const char *);
 		
+			void remove(const char *);
+		
 		private:
 			void * file;
 		

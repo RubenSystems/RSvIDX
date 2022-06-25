@@ -34,9 +34,16 @@ core::Array<InvertedIndexNode> InvertedIndex::get(const char * data) {
 	return results;
 }
 
-void InvertedIndex::remove(const ID & id) {
+void InvertedIndex::remove(InvertedIndexNode node) {
 	// TODO: implement
-	throw std::runtime_error("Stub not implemented");
+	int index = hash(node.data);
+	core::Array<InvertedIndexNode> * result = this->PersistantMultimap<InvertedIndexNode>::get(index);
+	
+	for(int i = 0; i < result->size(); i ++) {
+		if (result->operator[](i).id == node.id) {
+			result->remove(i);
+		}
+	}
 }
 
 unsigned int InvertedIndex::hash(const char * data) {

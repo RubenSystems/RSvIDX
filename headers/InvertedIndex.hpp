@@ -48,7 +48,7 @@ namespace rsvidx {
 		
 			core::Array<InvertedIndexNode> get(const char *);
 		
-			void remove(const ID &);
+			void remove(InvertedIndexNode);
 		
 		private:
 		

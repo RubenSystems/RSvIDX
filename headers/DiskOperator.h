@@ -29,6 +29,8 @@ namespace rsvidx {
 			
 			virtual bool exists(const char *) = 0;
 		
+			virtual void remove(const char *) = 0;
+		
 	};
 
 }

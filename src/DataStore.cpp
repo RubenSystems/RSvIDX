@@ -66,4 +66,9 @@ namespace rsvidx {
 		
 		file.close();
 	}
+	
+	void DataStore::remove(const ID & id) {
+		StandardDiskOperator file = StandardDiskOperator();
+		file.remove((foldername + id.data + ".rsrecord").c_str());
+	}
 }
