@@ -88,6 +88,9 @@ rsvidx.ordered.restype = c_void_p
 rsvidx.ordered_insert.argtypes = [c_void_p, c_char_p, c_float]
 rsvidx.ordered_insert.restype = None
 
+rsvidx.ordered_remove.argtypes = [c_void_p, c_char_p, c_float]
+rsvidx.ordered_remove.restype = None
+
 rsvidx.ordered_get_greater.argtypes = [c_void_p, c_float]
 rsvidx.ordered_get_greater.restype = c_void_p
 
@@ -131,6 +134,9 @@ class Ordered:
 		
 	def insert(self, id: str, value: float):
 			rsvidx.ordered_insert(self._index, bytes(id, "utf-8"), value)
+
+	def remove(self, id: str, value: float):
+			rsvidx.ordered_remove(self._index, bytes(id, "utf-8"), value)
 			
 	def getGreater(self, value: float) -> str:
 		result = rsvidx.ordered_get_greater(self._index, value)
@@ -311,7 +317,9 @@ class DataStore:
 		
 		return data, vector
 		
-		
+	def remove(self, id: str):
+		rsvidx.remove(self._index, bytes(id, "utf-8"))
+
 	def __del__(self):
 		rsvidx.close_datastore(self._index)
 

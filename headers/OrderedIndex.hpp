@@ -31,6 +31,8 @@ namespace rsvidx {
 		
 			void insert(OrderedIndexNode);
 		
+			void remove(OrderedIndexNode);
+		
 		private:
 			unsigned int search(OrderedIndexNode::orderednode_val);
 		

@@ -28,6 +28,16 @@ namespace rsvidx {
 		unsigned int index = search(value.data);
 		this->core::Array<OrderedIndexNode>::insert(index, value);
 	}
+	
+	void OrderedIndex::remove(OrderedIndexNode value) {
+		unsigned int index = search(value.data);
+		for (int i = index; i < this->core::Array<OrderedIndexNode>::size(); i ++) {
+			if (this->core::Array<OrderedIndexNode>::operator[](i).id == value.id) {
+				this->core::Array<OrderedIndexNode>::remove(i);
+				break;
+			}
+		}
+	}
 
 	unsigned int OrderedIndex::search(OrderedIndexNode::orderednode_val value) {
 		//binary search 

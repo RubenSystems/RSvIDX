@@ -140,6 +140,10 @@ extern "C" {
 		index->insert(insert);
 	}
 	
+	void ordered_remove (rsvidx::OrderedIndex * index, const char * id, rsvidx::OrderedIndexNode::orderednode_val data) {
+		index->remove({ID(id), data});
+	}
+	
 	core::Array<rsvidx::OrderedIndexNode> * ordered_get_greater(
 																rsvidx::OrderedIndex * index,
 																rsvidx::OrderedIndexNode::orderednode_val forValue
@@ -235,6 +239,12 @@ extern "C" {
 		index->get(ID(id), *record);
 
 		return record;
+	}
+	
+	void datastore_remove(rsvidx::DataStore * index, const char * id) {
+		
+		index->remove(ID(id));
+
 	}
 	
 	const char * datastore_result_get_data(rsvidx::Record * record) {
