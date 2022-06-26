@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 //#include <fstream>
+#include <cstring>
+
 #include "StandardDiskOperator.hpp"
 #include "../core/Array.h"
 #include "Math.hpp"

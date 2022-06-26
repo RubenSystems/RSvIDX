@@ -1,5 +1,5 @@
 
-COMPILER = clang++
+COMPILER = g++
 CXXFLAGS=-Wall -std=c++11 -fPIC
 
 SOURCES=$(wildcard src/*.cpp)

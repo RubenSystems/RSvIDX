@@ -13,6 +13,8 @@
 #include "PersistantTypes.hpp"
 #include "ID.hpp"
 #include <stdio.h>
+#include <cstring>
+
 
 
 

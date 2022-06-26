@@ -9,6 +9,7 @@
 #define Array_hpp
 
 #include <stdlib.h>
+#include <cstring>
 #include "../Output.h"
 
 

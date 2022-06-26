@@ -8,6 +8,8 @@
 #ifndef ID_h
 #define ID_h
 
+#include <cstring>
+
 
 struct ID {
 	const static int idsize = 8;

@@ -15,6 +15,8 @@
 #include "headers/OrderedIndex.hpp"
 #include "headers/InvertedIndex.hpp"
 #include "headers/DataStore.hpp"
+#include <cstring>
+
 
 #include "Output.h"
 

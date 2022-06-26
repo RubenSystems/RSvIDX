@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 #include <string>
+#include <cstring>
+
 #include "ID.hpp"
 #include "Math.hpp"
 #include "../Output.h"

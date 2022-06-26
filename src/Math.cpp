@@ -9,6 +9,7 @@
 #include <math.h>
 #include <system_error>
 #include <future>
+#include <cstring>
 #include <vector>
 #include "../Output.h"
 
