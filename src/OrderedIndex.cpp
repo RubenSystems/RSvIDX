@@ -30,7 +30,7 @@ namespace rsvidx {
 	}
 	
 	void OrderedIndex::remove(OrderedIndexNode value) {
-		unsigned int index = search(value.data);
+		unsigned int index = search(value.data) - 1;
 		for (int i = index; i < this->core::Array<OrderedIndexNode>::size(); i ++) {
 			if (this->core::Array<OrderedIndexNode>::operator[](i).id == value.id) {
 				this->core::Array<OrderedIndexNode>::remove(i);
