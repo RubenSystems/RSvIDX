@@ -1,6 +1,6 @@
 
 COMPILER = g++
-CXXFLAGS=-Wall -std=c++11 -fPIC
+CXXFLAGS=-Wall -std=c++17 -fPIC
 
 SOURCES=$(wildcard src/*.cpp)
 
