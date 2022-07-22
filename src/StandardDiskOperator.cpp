@@ -73,8 +73,8 @@ namespace rsvidx {
 		if(fileExists(fullDirectory)) {
 			return;
 		}
-		
 		fs::create_directories(fullDirectory);
+
 		//		Error handling
 		//			throw std::runtime_error("[FILE] - unable to create full directory " + std::string(fullDirectory));
 		//		}

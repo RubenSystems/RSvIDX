@@ -14,7 +14,7 @@
 
 namespace rsvidx {
 	struct OrderedIndexNode {
-		typedef float orderednode_val;
+		typedef double orderednode_val;
 		
 		ID id;
 		orderednode_val data;
