@@ -18,3 +18,13 @@ RSvIDX can be used for general purpose vector indexing and similarity search. Ap
 - optimised persistant operations (you now no longer need to explicitly save the index as this is scheduled automatically)
 - better memory performance
 - no dependencies (new build size is 98% smaller)
+
+
+### Coming soon:
+- C Bindings 
+- Python bindings 
+
+
+
+### Example:
+Try out https://apps.apple.com/gb/app/headlines-today/id1363257410 on the App Store for a semantic search example. 
