@@ -1,0 +1,3 @@
+[submodule "RSCore"]
+	path = RSCore
+	url = https://github.com/RubenSystems/RSCore.git
