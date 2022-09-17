@@ -1,1 +1,3 @@
 main.cpp
+*.so 
+bin/
