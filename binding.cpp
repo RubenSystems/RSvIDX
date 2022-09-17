@@ -100,4 +100,22 @@ extern "C" {
 	
 	
 	
+	// MARK: - Array bindings
+	
+	/*
+	 
+	 These bindings are minimal as the Array class was designed for C++.
+	 The provided bindings are not desgined to provide full functionality but
+	 instead to allow for a conversion to a language with C translation features.
+	 
+	 */
+	
+	rsvidx::LSHRecord * array_data( core::Array<rsvidx::LSHRecord> * array ) {
+		return &(array->operator[](0));
+	}
+	
+	core::Allocator<rsvidx::LSHRecord>::index_type array_size( core::Array<rsvidx::LSHRecord> * array ) {
+		return array->size();
+	}
+ 
 }
