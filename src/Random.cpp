@@ -5,7 +5,7 @@
 //  Created by Ruben Ticehurst-James on 02/09/2022.
 //
 
-#include "Random.hpp"
+#include "../math/Random.hpp"
 
 namespace rsvidx {
 	namespace math {

@@ -5,7 +5,7 @@
 //  Created by Ruben Ticehurst-James on 02/09/2022.
 //
 
-#include "Vector.hpp"
+#include "../math/Vector.hpp"
 #include <string.h>
 
 namespace rsvidx {

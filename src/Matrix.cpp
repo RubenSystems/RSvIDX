@@ -5,7 +5,7 @@
 //  Created by Ruben Ticehurst-James on 02/09/2022.
 //
 
-#include "Matrix.hpp"
+#include "../math/Matrix.hpp"
 #include <string.h>
 
 namespace rsvidx {

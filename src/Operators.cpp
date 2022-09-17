@@ -5,14 +5,14 @@
 //  Created by Ruben Ticehurst-James on 02/09/2022.
 //
 
-#include "Operators.hpp"
+#include "../math/Operators.hpp"
 
 #include <system_error>
 #include <future>
 #include <vector>
 #include <math.h>
 
-#include "../Random.hpp"
+#include "../math/Random.hpp"
 
 static rsvidx::math::Vector::v_val calculate_vector_row(rsvidx::math::Matrix * a, rsvidx::math::Vector * b, unsigned int row) {
 	float sum = 0;
