@@ -11,7 +11,7 @@
 extern "C" {
 	
 	// MARK: - LSH Bindings
-	const int table_size = 16;
+	const int table_size = 255;
 	const int table_bucket_size = 64;
 	
 	
@@ -68,7 +68,7 @@ extern "C" {
 
 		rsvidx::math::Vector vector_data (data_size, data);
 		rsvidx::LSHRecord record (id);
-		
+		std::cout << vector_data[0] << std::endl;
 		index->add(vector_data, record);
 	}
 	
@@ -83,7 +83,7 @@ extern "C" {
 	 - warning: results are not ordered as the index does not store the original vectors
 
 	 */
-	core::Array<rsvidx::LSHRecord> * get(
+	core::Array<rsvidx::LSHRecord> * get_similarity(
 										 rsvidx::LSHIndex<table_size, table_bucket_size> * index,
 										 rsvidx::math::Vector::v_val * data,
 										 unsigned int data_size
@@ -91,7 +91,6 @@ extern "C" {
 		
 		rsvidx::math::Vector vector_data (data_size, data);
 		core::Array<rsvidx::LSHRecord> result = index->get(vector_data);
-		
 		core::Array<rsvidx::LSHRecord> * heap_result = new core::Array<rsvidx::LSHRecord>(&(result[0]), result.size());
 		
 		return heap_result; 
@@ -110,12 +109,22 @@ extern "C" {
 	 
 	 */
 	
-	rsvidx::LSHRecord * array_data( core::Array<rsvidx::LSHRecord> * array ) {
-		return &(array->operator[](0));
+	const char * id_at_index( core::Array<rsvidx::LSHRecord> * array, core::Allocator<rsvidx::LSHRecord>::index_type index ) {
+		return array->operator[](index).id;
 	}
 	
 	core::Allocator<rsvidx::LSHRecord>::index_type array_size( core::Array<rsvidx::LSHRecord> * array ) {
 		return array->size();
 	}
- 
+	
+	
+	// MARK: - Cleanup
+	
+	void free_array(core::Array<rsvidx::LSHRecord> * array) {
+		delete array;
+	}
+	
+	void free_index(rsvidx::LSHIndex<table_size, table_bucket_size> * index) {
+		delete index;
+	}
 }

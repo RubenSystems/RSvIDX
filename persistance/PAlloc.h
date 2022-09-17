@@ -17,7 +17,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include <iostream>
 
 namespace rsvidx {
 	namespace persistance {
@@ -35,7 +34,7 @@ namespace rsvidx {
 				}
 			
 				void set_filename(const std::string & n_filename) {
-					filename = n_filename;
+					filename = n_filename + ".rspcs";
 					file = ::open(filename.c_str(), O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
 					struct stat file_info;
 

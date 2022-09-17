@@ -21,7 +21,7 @@ namespace rsvidx {
 			
 			public:
 				PMatrix(const std::string & filename, int n_columns, int n_rows) : PAlloc<math::Matrix::m_val>(), math::Matrix(n_columns, n_rows, nullptr){
-					allocator::set_filename(filename + "projections.rsmatrix");
+					allocator::set_filename(filename + "projections");
 					allocator::allocate(n_columns * n_rows);
 					matrix::data = allocator::data;
 				}

@@ -108,13 +108,13 @@ namespace rsvidx {
 		
 			//		size(pow(2, sizeof(LSHIndex::hash_type) * 8) - 1),
 			LSHIndex(const std::string & path, int _number_of_tables, int dimensions) :
-				tables( path + ".lshindex"),
+				tables( path ),
 				number_of_tables(_number_of_tables),
 				planes(_number_of_tables) {
 					tables.resize(number_of_tables);
 					planes.resize(number_of_tables);
 					for (int i = 0; i < number_of_tables; i ++) {
-						planes[i] = new persistance::PMatrix(std::to_string(i) + path, sizeof(hash_type) * 8, dimensions);
+						planes[i] = new persistance::PMatrix( path + std::to_string(i), sizeof(hash_type) * 8, dimensions);
 					}
 			}
 		
