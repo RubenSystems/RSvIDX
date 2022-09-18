@@ -65,13 +65,3 @@ class Similarity:
 	def __del__(self) :
 		rsvidx.free_index(self._idx)
 		
-	
-		
-
-x = Similarity("working_data/test", 2, 10)
-#x.generate()
-#x.add([1,2], "hello")
-#
-#
-print(x.get([1, 2]))
-
