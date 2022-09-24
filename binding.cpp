@@ -58,6 +58,7 @@ extern "C" {
 	 - parameter id: the id of the data.
 	 - warning: the id will be truncated to IDSIZE (see /similarity/LSHIndex.hpp)
 	 - warning: the original vector is not stored
+	 - warning: the databse does not prevent duplicate IDs from being added.
 	 */
 	void add_similarity(
 						rsvidx::LSHIndex<table_size, table_bucket_size> * index,
@@ -68,7 +69,6 @@ extern "C" {
 
 		rsvidx::math::Vector vector_data (data_size, data);
 		rsvidx::LSHRecord record (id);
-		std::cout << vector_data[0] << std::endl;
 		index->add(vector_data, record);
 	}
 	
@@ -95,6 +95,24 @@ extern "C" {
 		
 		return heap_result; 
 		
+	}
+	
+	
+	/**
+	 Remove the first instance of the ID from the Database.
+	 
+	 - parameter <#parameterName#>: <#Description#>.
+	 - returns: <#Return values#>
+	 - warning: <#Warning if any#>
+	 
+	 # Notes: #
+	 1. <#Notes if any#>
+	 */
+	
+	void remove_similarity(rsvidx::LSHIndex<table_size, table_bucket_size> * index,
+						   const char * id) {
+		rsvidx::LSHRecord record (id);
+		index->remove(record);
 	}
 	
 	

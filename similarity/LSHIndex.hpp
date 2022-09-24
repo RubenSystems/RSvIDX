@@ -89,9 +89,14 @@ namespace rsvidx {
 			return core::Array<LSHRecord>(&(table[(index * _BucketSize)]), sizes[index]);
 		}
 		
-		void print_sizes() {
+		void remove(const LSHRecord & rec) {
 			for (int i = 0; i < _Size; i ++) {
-				std::cout << sizes[i] << " - " << table[(i * _BucketSize)].id << " - " << (int)i << std::endl;
+				for (int c = 0; c < sizes[i]; c++) {
+					if (table[(i * _BucketSize) + c] == rec) {
+						memmove(&table[(i * _BucketSize) + c], &table[(i * _BucketSize) + (c + 1)], (sizes[i] --) - c );
+						return;
+					}
+				}
 			}
 		}
 		
@@ -177,7 +182,11 @@ namespace rsvidx {
 				return result;
 			}
 		
-			void remove(math::Vector & vec, LSHRecord & id);
+			void remove(LSHRecord & id) {
+				for (int i = 0; i < tables.size(); i ++) {
+					tables[i].remove(id);
+				}
+			}
 		
 		private:
 			persistance::PArray<LSHTable<_TableSize, _TableBucketSize>> tables;

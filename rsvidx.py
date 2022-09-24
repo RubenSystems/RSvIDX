@@ -62,6 +62,9 @@ class Similarity:
 		rsvidx.free_array(result_array)
 		return ret_data
 		
+	def remove(self, id: str):
+		rsvidx.remove_similarity(self._idx, bytes(id, "utf-8")) 
+		
 	def __del__(self) :
 		rsvidx.free_index(self._idx)
 		
