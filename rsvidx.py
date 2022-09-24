@@ -18,6 +18,9 @@ rsvidx.add_similarity.restype = None
 rsvidx.get_similarity.argtypes = [c_void_p, c_void_p, c_uint]
 rsvidx.get_similarity.restype = c_void_p
 
+rsvidx.remove_similarity.argtypes = [c_void_p, c_char_p]
+rsvidx.remove_similarity.restype = None
+
 rsvidx.id_at_index.argtypes = [c_void_p, c_ulong]
 rsvidx.id_at_index.restype = c_char_p
 
