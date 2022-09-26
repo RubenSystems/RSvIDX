@@ -20,7 +20,6 @@
 #include <vector>
 #include <unordered_set>
 
-
 #define IDSIZE 8
 
 namespace rsvidx {
@@ -93,10 +92,26 @@ namespace rsvidx {
 			for (int i = 0; i < _Size; i ++) {
 				for (int c = 0; c < sizes[i]; c++) {
 					if (table[(i * _BucketSize) + c] == rec) {
-						memmove(&table[(i * _BucketSize) + c], &table[(i * _BucketSize) + (c + 1)], (sizes[i] --) - c );
+						memmove(&table[(i * _BucketSize) + c], &table[(i * _BucketSize) + (c + 1)], ((sizes[i] --) - c) * sizeof(LSHRecord) );
 						return;
 					}
 				}
+			}
+		}
+		
+		void print_all() {
+			for (int i = 0; i < _Size * _BucketSize; i ++) {
+				if (table[i].id[0] != 0) {
+					printf("%s\n", table[i].id);
+				}
+			}
+		}
+		
+		void clear_all() {
+			memset(table, 0, (_Size * _BucketSize) * sizeof(LSHRecord));
+			for (int i = 0; i< _Size; i ++) {
+				
+				sizes[i] = 0;
 			}
 		}
 		
@@ -126,8 +141,8 @@ namespace rsvidx {
 			void generate() {
 				for (int i = 0; i < number_of_tables; i ++) {
 					
-					memset(tables[i].sizes, 0, _TableSize);
-					memset(tables[i].table, 0, _TableSize * _TableBucketSize);
+					memset(tables[i].sizes, 0, _TableSize * sizeof(int));
+					memset(tables[i].table, 0, _TableSize * _TableBucketSize * sizeof(LSHRecord));
 					
 					math::generateProjections(*planes[i]);
 				}
@@ -188,32 +203,23 @@ namespace rsvidx {
 				}
 			}
 		
+			void print_all() {
+				for (int i = 0; i < tables.size(); i ++) {
+					tables[i].print_all();
+				}
+			}
+		
+			void clear_all() {
+				for (int i = 0; i < tables.size(); i ++) {
+					tables[i].clear_all();
+				}
+			}
+		
 		private:
 			persistance::PArray<LSHTable<_TableSize, _TableBucketSize>> tables;
 			core::Array<persistance::PMatrix *> planes;
 			int number_of_tables;
 	};
-	
-	
-	
-	
-	// MARK: - IMPL
-
-	/*
-	
-
-	template <int _NumberOfTables>
-	void LSHIndex<_NumberOfTables>::remove(math::Vector & vec, LSHRecord & id) {
-		hash_type hash = math::hash<hash_type>(&planes, &vec);
-		core::ArrayWindow<LSHRecord> ids = base::operator[]((persistance::PAlloc<LSHRecord>::index_type)hash);
-		for (int i = 0; i < ids.size(); i ++) {
-			if (strcmp(id.id, ids[i].id) == 0) {
-				memset(&ids[i], 0, IDSIZE);
-			}
-		}
-		return ;
-	}
-	 */
 }
 
 #endif /* LSHIndex_hpp */
