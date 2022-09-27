@@ -15,6 +15,7 @@
 #include "../math/Matrix.hpp"
 #include "../math/Operators.hpp"
 
+#include <cstring>
 #include <math.h>
 #include <future>
 #include <vector>
@@ -42,7 +43,7 @@ namespace rsvidx {
 
 namespace std {
 	template <>
-	struct std::hash<rsvidx::LSHRecord> {
+	struct hash<rsvidx::LSHRecord> {
 		
 		
 		size_t operator()(const rsvidx::LSHRecord & record) const {
