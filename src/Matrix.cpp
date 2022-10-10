@@ -48,6 +48,7 @@ namespace rsvidx {
 		}
 		
 		Matrix & Matrix::operator = (Matrix && move) {
+			delete data;
 			rows = move.rows;
 			columns = move.columns;
 			requires_dealloc = move.requires_dealloc;

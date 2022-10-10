@@ -72,8 +72,9 @@ namespace rsvidx {
 	struct LSHTable {
 		
 		LSHTable() {
-			
 		}
+		
+//		console=serial0,115200 console=tty1 root=PARTUUID=98883d03-02 rootfstype=ext4 fsck.repair=yes rootwait
 		
 		void add(const LSHRecord & rec, unsigned long index) {
 			if (index > _Size) {

@@ -80,6 +80,7 @@ namespace rsvidx {
 				}
 				
 				PAlloc & operator = (PAlloc && move) {
+					delete data;
 					file = move.file;
 					data = move.data;
 					allocated = move.allocatedSize();
