@@ -18,11 +18,7 @@ RSvIDX can be used for general purpose vector indexing and similarity search. Ap
 - optimised persistant operations (you now no longer need to explicitly save the index as this is scheduled automatically)
 - better memory performance
 - no dependencies (new build size is 98% smaller)
-
-
-### Coming soon:
-- C Bindings 
-- Python bindings 
+- bindings for C and Python 
 
 
 
