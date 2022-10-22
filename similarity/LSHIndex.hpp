@@ -65,7 +65,11 @@ namespace std {
 
 namespace rsvidx {
 	
-
+	enum LSHAdd {
+		ADD_FAIL_OUT_OF_BOUNDS,
+		ADD_FAIL_FULL_BUCKET,
+		ADD_SUCCESS
+	};
 	
 	
 	template <int _Size, int _BucketSize>
@@ -76,13 +80,14 @@ namespace rsvidx {
 		
 //		console=serial0,115200 console=tty1 root=PARTUUID=98883d03-02 rootfstype=ext4 fsck.repair=yes rootwait
 		
-		void add(const LSHRecord & rec, unsigned long index) {
+		LSHAdd add(const LSHRecord & rec, unsigned long index) {
 			if (index > _Size) {
-				throw std::runtime_error("[LSH] - out of bounds");
+				return ADD_FAIL_OUT_OF_BOUNDS;
 			} else if (sizes[index] + 1 > _BucketSize) {
-				throw std::runtime_error("[LSH] - attempting to add to a full bucket");
+				return ADD_FAIL_FULL_BUCKET;
 			}
 			table[(index * _BucketSize) + sizes[index]++] = rec;
+			return ADD_SUCCESS;
 		}
 		
 		core::Array<LSHRecord> get(unsigned long index) {
