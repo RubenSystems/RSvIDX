@@ -1,5 +1,5 @@
 # RSvIDX
-The next generation vector indexing tool
+Vector indexing system
 
  ### Vector indexing
 RSvIDX can be used for general purpose vector indexing and similarity search. Applications include:
