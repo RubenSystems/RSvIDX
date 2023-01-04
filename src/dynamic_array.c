@@ -5,7 +5,7 @@
 //  Created by Ruben Ticehurst-James on 03/01/2023.
 //
 
-#include "dynamic_array.h"
+#include "include/dynamic_array.h"
 #include <stdlib.h>
 
 struct dynamic_ndarray init_dynamic_ndarray(ROW_COLUMN_TYPE rows, ROW_COLUMN_TYPE columns) {
