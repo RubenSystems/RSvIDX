@@ -12,6 +12,18 @@
 #include "ndarray.h"
 #include "config.h"
 
-void dot()
+
+enum raw_dot_produt_result {
+	RDP_SUCCESS,
+	RDP_WRONG_SIZE
+};
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+enum raw_dot_produt_result __raw_dot_product(DATA_TYPE * a, struct ndarray_shape a_shape, DATA_TYPE * b, struct ndarray_shape b_shape, DATA_TYPE * res, struct ndarray_shape res_shape);
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* operators_hpp */

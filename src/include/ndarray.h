@@ -7,6 +7,7 @@
 
 #ifndef ndarray_h
 #define ndarray_h
+#include "config.h"
 
 struct ndarray_shape {
 	ROW_COLUMN_TYPE rows, columns;
