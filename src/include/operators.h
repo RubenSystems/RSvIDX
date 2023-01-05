@@ -18,6 +18,12 @@ enum raw_dot_produt_result {
 	RDP_WRONG_SIZE
 };
 
+int __seed_random(void);
+
 enum raw_dot_produt_result __raw_dot_product(DATA_TYPE * a, struct ndarray_shape a_shape, DATA_TYPE * b, struct ndarray_shape b_shape, DATA_TYPE * res, struct ndarray_shape res_shape);
+
+void generate_planes(DATA_TYPE * res, struct ndarray_shape res_shape);
+
+size_t hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a, struct ndarray_shape a_shape) ;
 
 #endif /* operators_hpp */
