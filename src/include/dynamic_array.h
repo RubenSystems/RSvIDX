@@ -17,7 +17,7 @@ struct dynamic_ndarray {
 	DATA_TYPE * data;
 };
 
-struct dynamic_ndarray init_dynamic_ndarray(ROW_COLUMN_TYPE rows, ROW_COLUMN_TYPE columns);
+struct dynamic_ndarray init_dynamic_ndarray(ROW_COLUMN_TYPE rows, ROW_COLUMN_TYPE columns, DATA_TYPE * data);
 
 void free_dynamic_ndarray(struct dynamic_ndarray * array);
 

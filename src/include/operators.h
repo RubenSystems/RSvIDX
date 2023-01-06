@@ -22,7 +22,7 @@ int __seed_random(void);
 
 enum raw_dot_produt_result __raw_dot_product(DATA_TYPE * a, struct ndarray_shape a_shape, DATA_TYPE * b, struct ndarray_shape b_shape, DATA_TYPE * res, struct ndarray_shape res_shape);
 
-void generate_planes(DATA_TYPE * res, struct ndarray_shape res_shape);
+void generate_planes(DATA_TYPE * res, size_t size);
 
 HASH_SIZE hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a, struct ndarray_shape a_shape) ;
 

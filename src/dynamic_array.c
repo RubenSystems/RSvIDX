@@ -7,8 +7,8 @@
 
 #include "include/dynamic_array.h"
 #include <stdlib.h>
-
-struct dynamic_ndarray init_dynamic_ndarray(ROW_COLUMN_TYPE rows, ROW_COLUMN_TYPE columns) {
+#include <string.h>
+struct dynamic_ndarray init_dynamic_ndarray(ROW_COLUMN_TYPE rows, ROW_COLUMN_TYPE columns, DATA_TYPE * data) {
 	struct dynamic_ndarray _init_arr = {
 		{
 			.rows = rows,
@@ -16,6 +16,10 @@ struct dynamic_ndarray init_dynamic_ndarray(ROW_COLUMN_TYPE rows, ROW_COLUMN_TYP
 		},
 		.data = calloc(rows * columns, sizeof(ROW_COLUMN_TYPE))
 	};
+	if (data != NULL) {
+		memmove(_init_arr.data, data, rows * columns * sizeof(DATA_TYPE));
+	}
+	
 	return _init_arr;
 }
 

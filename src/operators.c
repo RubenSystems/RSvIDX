@@ -43,8 +43,8 @@ enum raw_dot_produt_result __raw_dot_product(DATA_TYPE * a, struct ndarray_shape
 	return RDP_SUCCESS;
 }
 
-void generate_planes(DATA_TYPE * res, struct ndarray_shape res_shape){
-	for (unsigned int index = 0; index < res_shape.columns * res_shape.rows; index ++) {
+void generate_planes(DATA_TYPE * res, size_t size){
+	for (unsigned int index = 0; index < size; index ++) {
 		res[index] = (2 *(float)rand() / RAND_MAX) - 1;
 	}
 }
