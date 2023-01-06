@@ -49,7 +49,7 @@ void generate_planes(DATA_TYPE * res, struct ndarray_shape res_shape){
 	}
 }
 
-size_t hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a, struct ndarray_shape a_shape) {
+HASH_SIZE hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a, struct ndarray_shape a_shape) {
 	if (a_shape.columns != 1) {
 		return -1;
 	}
@@ -57,7 +57,7 @@ size_t hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a
 	struct ndarray_shape hash_shape = {planes_shape.rows, 1};
 	__raw_dot_product(planes, planes_shape, a, a_shape, raw_hash, hash_shape);
 	
-	size_t hash = 0;
+	HASH_SIZE hash = 0;
 	for (unsigned int i = 0; i < hash_shape.rows; i ++) {
 		printf("%f\n", raw_hash[i]);
 		hash += raw_hash[i] > 0 ? (1 << i) : 0;

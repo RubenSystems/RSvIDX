@@ -10,5 +10,6 @@
 
 #define DATA_TYPE float
 #define ROW_COLUMN_TYPE size_t
+#define HASH_SIZE uint64_t
 
 #endif /* config_h */

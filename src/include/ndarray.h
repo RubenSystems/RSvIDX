@@ -13,5 +13,4 @@ struct ndarray_shape {
 	ROW_COLUMN_TYPE rows, columns;
 };
 
-
 #endif /* ndarray_h */

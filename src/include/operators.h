@@ -24,6 +24,6 @@ enum raw_dot_produt_result __raw_dot_product(DATA_TYPE * a, struct ndarray_shape
 
 void generate_planes(DATA_TYPE * res, struct ndarray_shape res_shape);
 
-size_t hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a, struct ndarray_shape a_shape) ;
+HASH_SIZE hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a, struct ndarray_shape a_shape) ;
 
 #endif /* operators_hpp */
