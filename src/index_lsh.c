@@ -45,9 +45,7 @@ struct index_lsh init_lsh(const char * filename, size_t hash_size, size_t dimens
 }
 
 void lsh_add(struct index_lsh * index, struct id_record * uid, struct dynamic_ndarray * value) {
-	hash(<#float *planes#>, <#struct ndarray_shape planes_shape#>, value->data, value->shape);
 	
-	lsh_allocator_add(index->allocator, <#size_t block_no#>, <#struct id_record *value#>)
 	
 }
 
