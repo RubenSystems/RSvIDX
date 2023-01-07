@@ -6,15 +6,30 @@
 //
 
 #include "hash_table.h"
+#include <stdbool.h>
 
-
-struct hash_table init_hash_table() {
+struct hash_table init_hash_table(_hash_table_alloc allocator, _hash_table_free deallocator) {
 	struct hash_table _init_val = {
-		.buckets = calloc(HT_INITIAL_SIZE, sizeof(struct hash_bucket)),
+		.buckets = allocator(HT_INITIAL_SIZE * sizeof(struct hash_bucket)),
 		.used = 0,
-		.allocated = HT_INITIAL_SIZE
+		.allocated = HT_INITIAL_SIZE,
+		.allocator = allocator,
+		.dealloc = deallocator
 	};
 	return _init_val;
+}
+
+
+static struct hash_bucket * in_memory_ht_allocator(size_t size){
+	return malloc(sizeof(struct hash_bucket) * size);
+}
+
+static void in_memory_ht_deallocator(struct hash_bucket * buckets) {
+	free(buckets);
+}
+
+struct hash_table in_memory_hash_table() {
+	return init_hash_table(in_memory_ht_allocator, in_memory_ht_deallocator);
 }
 
 void hash_table_add(struct hash_table * table, size_t key, size_t value) {

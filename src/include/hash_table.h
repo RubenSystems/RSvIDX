@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+
 #define HT_INITIAL_SIZE 8
 #define HT_PROBE_SHIFT 5
 
@@ -37,13 +37,20 @@ struct hash_bucket {
 	size_t 				value;
 };
 
+typedef struct hash_bucket * 	(* _hash_table_alloc)(size_t);
+typedef void 					(* _hash_table_free)(struct hash_bucket *);
+
 struct hash_table {
 	struct hash_bucket * 	buckets;
 	size_t 					used;
 	size_t 					allocated;
+	_hash_table_alloc 		allocator;
+	_hash_table_free		dealloc;
 };
 
-struct hash_table init_hash_table(void);
+struct hash_table init_hash_table(_hash_table_alloc allocator, _hash_table_free deallocator);
+
+struct hash_table in_memory_hash_table(void);
 
 void hash_table_add(struct hash_table * table, size_t key, size_t value) ;
 
