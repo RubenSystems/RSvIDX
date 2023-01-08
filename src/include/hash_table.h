@@ -20,9 +20,9 @@
  */
 
 enum bucket_flag {
-	BUCKET_OCCUPIED,
-	BUCKET_BRIDGE,
-	BUCKET_EMPTY
+	BUCKET_OCCUPIED = 2,
+	BUCKET_BRIDGE = 1,
+	BUCKET_EMPTY = 0
 };
 
 enum bucket_operation_response {
@@ -54,7 +54,7 @@ struct hash_table in_memory_hash_table(void);
 
 void hash_table_add(struct hash_table * table, size_t key, size_t value) ;
 
-enum bucket_operation_response hash_table_get(struct hash_table * table, size_t key, struct hash_bucket * bucket);
+enum bucket_operation_response hash_table_get(struct hash_table * table, size_t key, size_t * value);
 
 enum bucket_operation_response hash_table_delete(struct hash_table * table, size_t key);
 
