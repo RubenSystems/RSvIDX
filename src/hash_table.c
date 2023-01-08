@@ -13,12 +13,34 @@ struct hash_table init_hash_table(_hash_table_alloc allocator, _hash_table_free 
 		.buckets = allocator(HT_INITIAL_SIZE * sizeof(struct hash_bucket)),
 		.used = 0,
 		.allocated = HT_INITIAL_SIZE,
-		.allocator = allocator,
-		.dealloc = deallocator
+		._allocator = allocator,
+		._dealloc = deallocator
 	};
 	return _init_val;
 }
 
+
+static void _resize_table(struct hash_table * table, size_t new_size) {
+	size_t old_allocated_size = table->allocated;
+	struct hash_bucket * old_buckets = table->buckets;
+	
+	
+	table->buckets = table->_allocator(sizeof(struct hash_bucket) * new_size);
+	table->allocated = new_size;
+	
+	
+	size_t moved = 0;
+	for (size_t i = 0; i < old_allocated_size; i ++) {
+		if (old_buckets[i].status == BUCKET_OCCUPIED) {
+			hash_table_add(table, old_buckets[i].key, old_buckets[i].value);
+			
+			if (++moved >= table->used) {
+				break;
+			}
+		}
+	}
+	table->_dealloc(old_buckets);
+}
 
 static struct hash_bucket * in_memory_ht_allocator(size_t size){
 	return malloc(sizeof(struct hash_bucket) * size);
@@ -36,6 +58,10 @@ void hash_table_add(struct hash_table * table, size_t key, size_t value) {
 	size_t mask = table->allocated - 1;
 	size_t index = key & mask;
 	size_t probe = key;
+	
+	if (table->used + 1 >= (2/3) * table->allocated) {
+		_resize_table(table, table->allocated * 2);
+	}
 	
 	while (true) {
 		if (table->buckets[index].status == BUCKET_BRIDGE ||
@@ -83,6 +109,10 @@ enum bucket_operation_response hash_table_delete(struct hash_table * table, size
 	size_t mask = table->allocated - 1;
 	size_t index = key & mask;
 	size_t probe = key;
+	
+//	if (table->used - 1 <= (1/3) * table->allocated) {
+//		_resize_table(table, table->allocated * 2);
+//	}
 	
 	while (true) {
 		if (table->buckets[index].key == key &&

@@ -44,8 +44,8 @@ struct hash_table {
 	struct hash_bucket * 	buckets;
 	size_t 					used;
 	size_t 					allocated;
-	_hash_table_alloc 		allocator;
-	_hash_table_free		dealloc;
+	_hash_table_alloc 		_allocator;
+	_hash_table_free		_dealloc;
 };
 
 struct hash_table init_hash_table(_hash_table_alloc allocator, _hash_table_free deallocator);
