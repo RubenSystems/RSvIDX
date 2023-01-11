@@ -84,11 +84,6 @@ static void _resize_table(struct hash_table * table, size_t new_size) {
 	_dealloc(old_data_ptr, sizeof(size_t) + (sizeof(struct hash_bucket) * old_allocated_size));
 }
 
-
-
-
-
-
 struct hash_table init_phash_table(const char * filename) {
 	int fd = _open_file(filename);
 	

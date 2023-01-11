@@ -34,9 +34,8 @@ struct index_lsh {
 struct index_lsh init_lsh(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions) ;
 
 void lsh_add(struct index_lsh *, struct id_record * uid, struct dynamic_ndarray * value);
-//
-//void lsh_get();
-//
-//void lsh_delete();
+
+size_t lsh_get(struct index_lsh *, struct dynamic_ndarray * value, size_t max_buffer_size, struct id_record * result_buffer);
+
 
 #endif /* index_lsh_h */
