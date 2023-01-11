@@ -15,6 +15,7 @@
 #include "id_record.h"
 #include "operators.h"
 #include "dynamic_array.h"
+#include "hash_table.h"
 
 #include "../../smac-alloc/src/include/allocator.h"
 
@@ -24,10 +25,13 @@ bool lsh_required_equal(struct id_record rhs, struct id_record lhs);
 TYPED_ALLOCATOR_DEF(lsh, struct id_record, 10);
 
 struct index_lsh {
-	struct lsh_allocator allocator;
+	struct hash_table mapper;
+	struct lsh_allocator storage;
+	size_t hash_size, dimensions;
+	
 };
 
-struct index_lsh init_lsh(const char * filename, size_t hash_size, size_t dimensions) ;
+struct index_lsh init_lsh(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions) ;
 
 void lsh_add(struct index_lsh *, struct id_record * uid, struct dynamic_ndarray * value);
 //

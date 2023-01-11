@@ -12,6 +12,9 @@
 
 TYPED_ALLOCATOR_IMPL(lsh, struct id_record, 10);
 
+/*
+ Specalisation functions
+ */
 bool lsh_required_equal(struct id_record rhs, struct id_record lhs) {
 	for (int i = 0; i < ID_SIZE; i ++) {
 		if (rhs.uid[i] != lhs.uid[i]) {
@@ -21,8 +24,13 @@ bool lsh_required_equal(struct id_record rhs, struct id_record lhs) {
 	return true;
 }
 
-struct index_lsh init_lsh(const char * filename, size_t hash_size, size_t dimensions) {
-	int fd = _open_file(filename);
+
+/*
+ Concrete stuff
+ */
+
+struct index_lsh init_lsh(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions) {
+	int fd = _open_file(data_filename);
 	DATA_TYPE * projections = NULL;
 	
 	if (_file_size(fd) == 0) {
@@ -32,13 +40,14 @@ struct index_lsh init_lsh(const char * filename, size_t hash_size, size_t dimens
 	}
 	
 	struct index_lsh _init_alloc = {
-		init_lsh_allocator_pre_open(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE))
+		init_phash_table(mapping_filename),
+		init_lsh_allocator_pre_open(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE)),
+		hash_size,
+		dimensions
 	};
 	
 	if (projections != NULL) {
 		free(projections);
-		printf("%i\n", (int)pow(2, hash_size));
-		lsh_allocator_alloc(&_init_alloc.allocator, (int)pow(2, hash_size));
 	}
 	
 	return _init_alloc;
@@ -46,7 +55,23 @@ struct index_lsh init_lsh(const char * filename, size_t hash_size, size_t dimens
 
 void lsh_add(struct index_lsh * index, struct id_record * uid, struct dynamic_ndarray * value) {
 	
-	
+	struct ndarray_shape planes_shape = {
+		index->hash_size,
+		index->dimensions
+	};
+
+	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value->data, value->shape);
+	size_t get_value;
+	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
+	if (get_response == BUCKET_DOES_NOT_EXIST || get_value - 1 == -1) {
+		// no block in datastore to represent bucket.
+		size_t block_index = lsh_allocator_alloc(&index->storage, 1);
+		lsh_allocator_add(&index->storage, block_index, uid);
+		hash_table_add(&index->mapper, hash_val, block_index);
+	} else {
+		// blocke in datastore to respresent bucket.
+		lsh_allocator_add(&index->storage, get_value, uid);
+	}
 }
 
-// shrinkFLATION Shrinking to a format from the latent space of autoencoder transformers to a intermediate optimised ndimensional vector
+// shrinkFLATION Shrinking to a format from the latent space of autoencoder transformers to an intermediate optimised ndimensional vector

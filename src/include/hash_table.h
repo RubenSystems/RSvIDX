@@ -34,23 +34,16 @@ enum bucket_operation_response {
 struct hash_bucket {
 	enum bucket_flag 	status;
 	size_t 				key;
-	size_t 				value;
+	int64_t				value;
 };
-
-typedef struct hash_bucket * 	(* _hash_table_alloc)(size_t);
-typedef void 					(* _hash_table_free)(struct hash_bucket *);
 
 struct hash_table {
-	struct hash_bucket * 	buckets;
-	size_t 					used;
+	void * 	raw_data;
 	size_t 					allocated;
-	_hash_table_alloc 		_allocator;
-	_hash_table_free		_dealloc;
+	int 					_pfd;
 };
 
-struct hash_table init_hash_table(_hash_table_alloc allocator, _hash_table_free deallocator);
-
-struct hash_table in_memory_hash_table(void);
+struct hash_table init_phash_table(const char * filename);
 
 void hash_table_add(struct hash_table * table, size_t key, size_t value) ;
 
