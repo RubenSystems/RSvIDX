@@ -86,7 +86,6 @@ size_t lsh_get(struct index_lsh * index, struct dynamic_ndarray * value, size_t 
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response == BUCKET_DOES_NOT_EXIST || get_value - 1 == -1) {
-		printf("%i get_value\n",get_value - 1 );
 		return 0;
 	} else {
 		return lsh_allocator_get(&index->storage, get_value - 1, max_buffer_size, result_buffer);
