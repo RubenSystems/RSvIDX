@@ -1,5 +1,6 @@
 main.cpp
 main.c
-*.so 
+*.so
+*.o 
 bin/
 working_data/
