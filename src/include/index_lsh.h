@@ -37,5 +37,6 @@ void lsh_add(struct index_lsh *, struct id_record * uid, struct dynamic_ndarray 
 
 size_t lsh_get(struct index_lsh *, struct dynamic_ndarray * value, size_t max_buffer_size, struct id_record * result_buffer);
 
+void lsh_delete(struct index_lsh *, struct id_record * id_to_delete);
 
 #endif /* index_lsh_h */

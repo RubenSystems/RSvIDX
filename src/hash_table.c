@@ -12,7 +12,7 @@
 #include <sys/mman.h>
 #include "../smac-alloc/src/include/palloc.h"
 
-static struct hash_bucket * buckets(struct hash_table * table) {
+struct hash_bucket * buckets(struct hash_table * table) {
 	return (struct hash_bucket *)(table->raw_data + sizeof(size_t));
 }
 

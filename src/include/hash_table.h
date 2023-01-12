@@ -43,6 +43,8 @@ struct hash_table {
 	int 					_pfd;
 };
 
+struct hash_bucket * buckets(struct hash_table * table);
+
 struct hash_table init_phash_table(const char * filename);
 
 void hash_table_add(struct hash_table * table, size_t key, size_t value) ;
