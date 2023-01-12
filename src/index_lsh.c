@@ -63,11 +63,11 @@ void lsh_add(struct index_lsh * index, struct id_record * uid, struct dynamic_nd
 	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value->data, value->shape);
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
-	if (get_response == BUCKET_DOES_NOT_EXIST || get_value - 1 == -1) {
+	if (get_response == BUCKET_DOES_NOT_EXIST) {
 		// no block in datastore to represent bucket.
 		size_t block_index = lsh_allocator_alloc(&index->storage, 1);
 		lsh_allocator_add(&index->storage, block_index, uid);
-		hash_table_add(&index->mapper, hash_val, block_index + 1);
+		hash_table_add(&index->mapper, hash_val, block_index);
 	} else {
 		// blocke in datastore to respresent bucket.
 		lsh_allocator_add(&index->storage, get_value, uid);
@@ -85,10 +85,10 @@ size_t lsh_get(struct index_lsh * index, struct dynamic_ndarray * value, size_t 
 	
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
-	if (get_response == BUCKET_DOES_NOT_EXIST || get_value - 1 == -1) {
+	if (get_response == BUCKET_DOES_NOT_EXIST) {
 		return 0;
 	} else {
-		return lsh_allocator_get(&index->storage, get_value - 1, max_buffer_size, result_buffer);
+		return lsh_allocator_get(&index->storage, get_value, max_buffer_size, result_buffer);
 	}
 }
 
