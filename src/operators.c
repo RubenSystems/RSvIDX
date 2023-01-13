@@ -52,15 +52,16 @@ void generate_planes(DATA_TYPE * res, size_t size){
 }
 
 HASH_SIZE hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE * a, struct ndarray_shape a_shape) {
-	if (a_shape.columns != 1) {
+	if (a_shape.rows != 1) {
 		return -1;
 	}
-	DATA_TYPE * raw_hash = calloc(planes_shape.rows, sizeof(DATA_TYPE));
-	struct ndarray_shape hash_shape = {planes_shape.rows, 1};
-	__raw_dot_product(planes, planes_shape, a, a_shape, raw_hash, hash_shape);
+	DATA_TYPE * raw_hash = calloc(planes_shape.columns, sizeof(DATA_TYPE));
+	struct ndarray_shape hash_shape = {1, planes_shape.columns};
+	__raw_dot_product(a, a_shape, planes, planes_shape, raw_hash, hash_shape);
 	
 	HASH_SIZE hash = 0;
-	for (unsigned int i = 0; i < hash_shape.rows; i ++) {
+	for (unsigned int i = 0; i < hash_shape.columns; i ++) {
+		printf("---%f\n", raw_hash[i]);
 		hash += raw_hash[i] > 0 ? (1 << i) : 0;
 	}
 	free(raw_hash);
