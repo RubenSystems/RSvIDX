@@ -161,3 +161,8 @@ enum bucket_operation_response hash_table_delete(struct hash_table * table, size
 		index = mask & (index * 5 + probe + 1);
 	}
 }
+
+
+void hash_table_free(struct hash_table * table) {
+	_dealloc(table->raw_data, (sizeof(struct hash_bucket) * table->allocated) + sizeof(size_t));
+}

@@ -16,12 +16,7 @@ TYPED_ALLOCATOR_IMPL(lsh, struct id_record, 10);
  Specalisation functions
  */
 bool lsh_required_equal(struct id_record rhs, struct id_record lhs) {
-	for (int i = 0; i < ID_SIZE; i ++) {
-		if (rhs.uid[i] != lhs.uid[i]) {
-			return false;
-		}
-	}
-	return true;
+	return strcmp(rhs.uid, lhs.uid) == 0;
 }
 
 
@@ -53,14 +48,25 @@ struct index_lsh init_lsh(const char * mapping_filename, const char * data_filen
 	return _init_alloc;
 }
 
-void lsh_add(struct index_lsh * index, struct id_record * uid, struct dynamic_ndarray * value) {
+struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions) {
+	struct index_lsh * index = malloc(sizeof(struct index_lsh));
+	*index = init_lsh(mapping_filename, data_filename, hash_size, dimensions);
+	return index;
+}
+
+void lsh_add(struct index_lsh * index, struct id_record * uid, DATA_TYPE * value, size_t value_size) {
 	
 	struct ndarray_shape planes_shape = {
 		index->hash_size,
 		index->dimensions
 	};
+	
+	struct ndarray_shape value_shape = {
+		value_size,
+		1
+	};
 
-	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value->data, value->shape);
+	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response == BUCKET_DOES_NOT_EXIST) {
@@ -75,14 +81,19 @@ void lsh_add(struct index_lsh * index, struct id_record * uid, struct dynamic_nd
 }
 
 
-size_t lsh_get(struct index_lsh * index, struct dynamic_ndarray * value, size_t max_buffer_size, struct id_record * result_buffer) {
+size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, struct id_record * result_buffer) {
 	struct ndarray_shape planes_shape = {
 		index->hash_size,
 		index->dimensions
 	};
 	
-	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value->data, value->shape);
+	struct ndarray_shape value_shape = {
+		value_size,
+		1
+	};
+
 	
+	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response == BUCKET_DOES_NOT_EXIST) {
@@ -103,5 +114,21 @@ void lsh_delete(struct index_lsh * index, struct id_record * id_to_delete) {
 	}
 }
 
+void lsh_delete_helper(struct index_lsh * index, char * id_to_delete ) {
+	struct id_record rec;
+	strncpy(rec.uid, id_to_delete, ID_SIZE - 1);
+	lsh_delete(index, &rec);
+}
+
+void lsh_free(struct index_lsh * index) {
+	lsh_allocator_free(&index->storage);
+	hash_table_free(&index->mapper);
+}
+
+
+void lsh_heap_free(struct index_lsh * index) {
+	lsh_free(index);
+	free(index);
+}
 
 // shrinkFLATION Shrinking to a format from the latent space of autoencoder transformers to an intermediate optimised ndimensional vector

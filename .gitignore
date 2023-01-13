@@ -4,3 +4,4 @@ main.c
 *.o 
 bin/
 working_data/
+TESTMakefile

@@ -53,4 +53,6 @@ enum bucket_operation_response hash_table_get(struct hash_table * table, size_t 
 
 enum bucket_operation_response hash_table_delete(struct hash_table * table, size_t key);
 
+void hash_table_free(struct hash_table * table) ;
+
 #endif /* hash_table_h */
