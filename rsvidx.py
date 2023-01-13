@@ -69,9 +69,6 @@ class Similarity:
 		return [raidb[i] for i in range(result_size)]
 		
 	def remove(self, id: str):
-		
-	
-		
 		rsvidx.lsh_delete_helper(self._idx, bytes(id, "utf-8"))
 		
 	def __del__(self) :
