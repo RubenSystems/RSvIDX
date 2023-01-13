@@ -54,7 +54,7 @@ class Similarity:
 			len(vector),
 		)
 	
-	def get(self, vector: [float], limit: 100):
+	def get(self, vector: [float], limit: int = 100):
 		buffer = create_string_buffer(id_size * limit)
 		result_size = rsvidx.lsh_get(
 			self._idx,
@@ -73,12 +73,3 @@ class Similarity:
 		
 	def __del__(self) :
 		rsvidx.lsh_heap_free(self._idx)
-
-
-x = Similarity("jeff", 4, 2)
-
-x.remove("hi botajef!!")
-#x.add([1,2], "hi botajef!!")
-
-for i in x.get([1,2], 10):
-	print(i)
