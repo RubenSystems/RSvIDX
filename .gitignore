@@ -1,4 +1,7 @@
 main.cpp
-*.so 
+main.c
+*.so
+*.o 
 bin/
 working_data/
+TESTMakefile

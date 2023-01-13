@@ -1,0 +1,134 @@
+//
+//  index_lsh.c
+//  RSvIDX_V4
+//
+//  Created by Ruben Ticehurst-James on 06/01/2023.
+//
+
+#include "include/index_lsh.h"
+#include <math.h>
+
+#include "../smac-alloc/src/include/palloc.h"
+
+TYPED_ALLOCATOR_IMPL(lsh, struct id_record, 10);
+
+/*
+ Specalisation functions
+ */
+bool lsh_required_equal(struct id_record rhs, struct id_record lhs) {
+	return strcmp(rhs.uid, lhs.uid) == 0;
+}
+
+
+/*
+ Concrete stuff
+ */
+
+struct index_lsh init_lsh(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions) {
+	int fd = _open_file(data_filename);
+	DATA_TYPE * projections = NULL;
+	
+	if (_file_size(fd) == 0) {
+		// generate projections
+		projections = calloc(dimensions * hash_size, sizeof(DATA_TYPE));
+		generate_planes(projections, dimensions * hash_size);
+	}
+	
+	struct index_lsh _init_alloc = {
+		init_phash_table(mapping_filename),
+		init_lsh_allocator_pre_open(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE)),
+		hash_size,
+		dimensions
+	};
+	
+	if (projections != NULL) {
+		free(projections);
+	}
+	
+	return _init_alloc;
+}
+
+struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions) {
+	struct index_lsh * index = malloc(sizeof(struct index_lsh));
+	*index = init_lsh(mapping_filename, data_filename, hash_size, dimensions);
+	return index;
+}
+
+void lsh_add(struct index_lsh * index, struct id_record * uid, DATA_TYPE * value, size_t value_size) {
+	
+	struct ndarray_shape planes_shape = {
+		index->hash_size,
+		index->dimensions
+	};
+	
+	struct ndarray_shape value_shape = {
+		value_size,
+		1
+	};
+
+	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
+	size_t get_value;
+	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
+	if (get_response == BUCKET_DOES_NOT_EXIST) {
+		// no block in datastore to represent bucket.
+		size_t block_index = lsh_allocator_alloc(&index->storage, 1);
+		lsh_allocator_add(&index->storage, block_index, uid);
+		hash_table_add(&index->mapper, hash_val, block_index);
+	} else {
+		// blocke in datastore to respresent bucket.
+		lsh_allocator_add(&index->storage, get_value, uid);
+	}
+}
+
+
+size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, struct id_record * result_buffer) {
+	struct ndarray_shape planes_shape = {
+		index->hash_size,
+		index->dimensions
+	};
+	
+	struct ndarray_shape value_shape = {
+		value_size,
+		1
+	};
+
+	
+	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
+	size_t get_value;
+	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
+	if (get_response == BUCKET_DOES_NOT_EXIST) {
+		return 0;
+	} else {
+		return lsh_allocator_get(&index->storage, get_value, max_buffer_size, result_buffer);
+	}
+}
+
+void lsh_delete(struct index_lsh * index, struct id_record * id_to_delete) {
+	
+	for (size_t bucket = 0; bucket < index->mapper.allocated; bucket ++) {
+		if (buckets(&index->mapper)[bucket].status == BUCKET_OCCUPIED) {
+			int64_t value = buckets(&index->mapper)[bucket].value;
+			lsh_allocator_delete(&index->storage, value, id_to_delete);
+			// TODO: - CHECK IF BUCKET SIZE == 0 and DELETE REFERENCE. 
+		}
+	}
+}
+
+void lsh_delete_helper(struct index_lsh * index, char * id_to_delete ) {
+	struct id_record rec;
+	strncpy(rec.uid, id_to_delete, ID_SIZE - 1);
+	lsh_delete(index, &rec);
+}
+
+void lsh_free(struct index_lsh * index) {
+	lsh_allocator_free(&index->storage);
+	hash_table_free(&index->mapper);
+}
+
+
+void lsh_heap_free(struct index_lsh * index) {
+	lsh_free(index);
+	free(index);
+}
+
+// shrinkFLATION Shrinking to a format from the latent space of autoencoder transformers to an intermediate optimised ndimensional vector

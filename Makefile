@@ -1,11 +1,19 @@
+LDFLAGS = -shared -L./smac-alloc
+TARGET = rsvidx.so
+CSOURCES = $(shell echo src/*.c)
+SMAC_SOURCES = $(shell echo smac-alloc/src/*.c)
+FLAGS = -O3 -I./src/include -fPIC
 
-COMPILER = g++
-CXXFLAGS=-std=c++17 -fPIC
+OBJECTS = $(CSOURCES:.c=_c.o)
+SMAC_OBJECTS = $(SMAC_SOURCES:.c=_c.o)
 
-SOURCES=$(wildcard src/*.cpp)
+all: $(TARGET)
 
-all:
-	$(COMPILER) $(CXXFLAGS) -shared -O2 -o bin/rsvidx_build.so binding.cpp $(SOURCES)
+$(TARGET): $(OBJECTS) $(SMAC_OBJECTS)
+	gcc $(FLAGS) $(LDFLAGS) -o $(TARGET) $(OBJECTS) $(SMAC_OBJECTS)
+
+%_c.o: %.c
+	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	rm bin/rsvidx_build.so
+	rm $(OBJECTS) $(SMAC_OBJECTS) $(TARGET)

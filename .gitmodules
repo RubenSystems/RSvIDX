@@ -1,3 +1,3 @@
-[submodule "RSCore"]
-	path = RSCore
-	url = https://github.com/RubenSystems/RSCore.git
+[submodule "smac-alloc"]
+	path = smac-alloc
+	url = https://github.com/RubenSystems/smac-alloc.git
