@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include "ndarray.h"
 #include "config.h"
-#include <stdlib.h>
+#include <stdint.h>
 
 enum raw_dot_produt_result {
 	RDP_SUCCESS,

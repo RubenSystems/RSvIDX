@@ -8,7 +8,7 @@
 #ifndef config_h
 #define config_h
 
-#include <stdlib.h>
+
 #define DATA_TYPE float
 #define ROW_COLUMN_TYPE size_t
 #define HASH_SIZE uint64_t
