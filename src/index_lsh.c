@@ -56,14 +56,15 @@ struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * dat
 
 void lsh_add(struct index_lsh * index, struct id_record * uid, DATA_TYPE * value, size_t value_size) {
 	
+	// Don't transpose its toooo slowwww
 	struct ndarray_shape planes_shape = {
-		index->hash_size,
-		index->dimensions
+		index->dimensions,
+		index->hash_size
 	};
 	
 	struct ndarray_shape value_shape = {
+		1,
 		value_size,
-		1
 	};
 
 	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
@@ -83,13 +84,13 @@ void lsh_add(struct index_lsh * index, struct id_record * uid, DATA_TYPE * value
 
 size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, struct id_record * result_buffer) {
 	struct ndarray_shape planes_shape = {
+		index->dimensions,
 		index->hash_size,
-		index->dimensions
 	};
 	
 	struct ndarray_shape value_shape = {
+		1,
 		value_size,
-		1
 	};
 
 	
