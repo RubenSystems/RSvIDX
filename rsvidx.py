@@ -12,11 +12,11 @@ rsvidx.init_lsh_heap.restype = c_void_p
 rsvidx.lsh_heap_free.argtypes = [c_void_p]
 rsvidx.lsh_heap_free.restype = c_void_p
 
-rsvidx.lsh_add.argtypes = [c_void_p, c_char_p, c_void_p, c_int]
+rsvidx.lsh_add.argtypes = [c_void_p, c_char_p, c_void_p, c_ulong]
 rsvidx.lsh_add.restype = None
 
-rsvidx.lsh_get.argtypes = [c_void_p, c_void_p, c_int, c_int, c_void_p]
-rsvidx.lsh_get.restype = c_int
+rsvidx.lsh_get.argtypes = [c_void_p, c_void_p, c_ulong, c_ulong, c_void_p]
+rsvidx.lsh_get.restype = c_ulong
 
 rsvidx.lsh_delete_helper.argtypes = [c_void_p, c_char_p]
 rsvidx.lsh_delete_helper.restype = None
