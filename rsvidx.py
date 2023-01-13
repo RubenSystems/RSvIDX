@@ -73,12 +73,3 @@ class Similarity:
 		
 	def __del__(self) :
 		rsvidx.lsh_heap_free(self._idx)
-
-x = Similarity("working_data/jeff", 4, 2)
-#for i in range(200):
-#	x.add([1,2], f"item1-{i}")
-
-for i in range(200):
-	x.remove(f"item1-{i}")
-	
-print(x.get([1,2], 1000))
