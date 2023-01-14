@@ -46,7 +46,7 @@ enum raw_dot_produt_result __raw_dot_product(DATA_TYPE * a, struct ndarray_shape
 }
 
 void generate_planes(DATA_TYPE * res, size_t size){
-	for (unsigned int index = 0; index <= size; index ++) {
+	for (unsigned int index = 0; index < size; index ++) {
 		res[index] = (2 *(float)rand() / RAND_MAX) - 1;
 	}
 }
