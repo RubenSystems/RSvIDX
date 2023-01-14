@@ -47,4 +47,6 @@ void lsh_free(struct index_lsh *);
 
 void lsh_heap_free(struct index_lsh *);
 
+void debug_print(struct index_lsh *);
+
 #endif /* index_lsh_h */

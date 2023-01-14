@@ -132,4 +132,23 @@ void lsh_heap_free(struct index_lsh * index) {
 	free(index);
 }
 
+void debug_print(struct index_lsh * index) {
+	static int max_buffer_size = 100;
+	struct id_record buffer[max_buffer_size];
+	
+	for (int i = 0; i < index->mapper.allocated; i ++) {
+		if (buckets(&index->mapper)[i].status == BUCKET_OCCUPIED) {
+			size_t value = 0;
+			
+			hash_table_get(&index->mapper, i, &value);
+			
+			size_t res_size = lsh_allocator_get(&index->storage, value, max_buffer_size, buffer);
+			printf("Hash: %zu Bucket: %i Size:%zu\n",i, value, res_size);
+			for (int c = 0; c < res_size; c++) {
+				printf("\t%s\n", buffer[c].uid);
+			}
+		}
+	}
+}
+
 // shrinkFLATION Shrinking to a format from the latent space of autoencoder transformers to an intermediate optimised ndimensional vector
