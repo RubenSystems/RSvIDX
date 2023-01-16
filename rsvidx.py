@@ -69,6 +69,9 @@ class Similarity:
 		
 	def remove(self, id: str):
 		rsvidx.lsh_delete_helper(self._idx, bytes(id, "utf-8"))
+	
+	def quick_remove(self, id: str, vector):
+		rsvidx.lsh_delete_helper(self._idx, bytes(id, "utf-8"), (c_float * len(vector))(*vector), len(vector))
 		
 	def __del__(self) :
 		rsvidx.lsh_heap_free(self._idx)
