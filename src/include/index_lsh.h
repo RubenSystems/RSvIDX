@@ -41,6 +41,8 @@ size_t lsh_get(struct index_lsh *, DATA_TYPE * value, size_t value_size, size_t 
 
 void lsh_delete(struct index_lsh *, struct id_record * id_to_delete);
 
+void lsh_quick_delete(struct index_lsh * index, struct id_record * id_to_delete, DATA_TYPE * value, size_t value_size) ;
+
 void lsh_delete_helper(struct index_lsh * index, char * id_to_delete );
 
 void lsh_free(struct index_lsh *);

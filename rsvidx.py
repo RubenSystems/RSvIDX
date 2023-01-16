@@ -23,7 +23,6 @@ rsvidx.lsh_delete_helper.restype = None
 
 id_size = 32
 
-
 class RandomAccessIDBuffer:
 	def __init__(self, buffer):
 		self.buffer = buffer

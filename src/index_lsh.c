@@ -115,6 +115,27 @@ void lsh_delete(struct index_lsh * index, struct id_record * id_to_delete) {
 	}
 }
 
+void lsh_quick_delete(struct index_lsh * index, struct id_record * id_to_delete, DATA_TYPE * value, size_t value_size) {
+	
+	struct ndarray_shape planes_shape = {
+		index->dimensions,
+		index->hash_size,
+	};
+	
+	struct ndarray_shape value_shape = {
+		1,
+		value_size,
+	};
+
+	
+	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
+	size_t get_value;
+	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
+	if (get_response != BUCKET_DOES_NOT_EXIST)  {
+		return lsh_allocator_delete(&index->storage, get_value, id_to_delete);
+	}
+}
+
 void lsh_delete_helper(struct index_lsh * index, char * id_to_delete ) {
 	struct id_record rec;
 	strncpy(rec.uid, id_to_delete, ID_SIZE - 1);
@@ -143,7 +164,7 @@ void debug_print(struct index_lsh * index) {
 			hash_table_get(&index->mapper, i, &value);
 			
 			size_t res_size = lsh_allocator_get(&index->storage, value, max_buffer_size, buffer);
-			printf("Hash: %zu Bucket: %i Size:%zu\n",i, value, res_size);
+			printf("Hash: %i Bucket: %zu Size:%zu\n",i, value, res_size);
 			for (int c = 0; c < res_size; c++) {
 				printf("\t%s\n", buffer[c].uid);
 			}
