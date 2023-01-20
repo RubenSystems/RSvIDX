@@ -154,8 +154,9 @@ void lsh_heap_free(struct index_lsh * index) {
 }
 
 void debug_print(struct index_lsh * index) {
-	static int max_buffer_size = 100;
+	static int max_buffer_size = 200;
 	struct id_record buffer[max_buffer_size];
+	unsigned long size = 0;
 	
 	for (int i = 0; i < index->mapper.allocated; i ++) {
 		if (buckets(&index->mapper)[i].status == BUCKET_OCCUPIED) {
@@ -168,8 +169,10 @@ void debug_print(struct index_lsh * index) {
 			for (int c = 0; c < res_size; c++) {
 				printf("\t%s\n", buffer[c].uid);
 			}
+			size += res_size;
 		}
 	}
+	printf("TOTAL_RECORDS: %lu \n", size);
 }
 
 // shrinkFLATION Shrinking to a format from the latent space of autoencoder transformers to an intermediate optimised ndimensional vector
