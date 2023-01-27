@@ -63,7 +63,6 @@ class Similarity:
 		)
 		
 		raidb = RandomAccessIDBuffer(buffer)
-		print(result_size)
 
 		return [raidb[i] for i in range(result_size)]
 		
