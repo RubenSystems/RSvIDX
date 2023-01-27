@@ -10,13 +10,12 @@
 
 #include "../smac-alloc/src/include/palloc.h"
 
-TYPED_ALLOCATOR_IMPL(lsh, struct id_record, 10);
 
 /*
  Specalisation functions
  */
-bool lsh_required_equal(struct id_record rhs, struct id_record lhs) {
-	return strcmp(rhs.uid, lhs.uid) == 0;
+static bool lsh_required_equal(void * rhs, void * lhs) {
+	return strcmp(((struct id_record *)rhs)->uid, ((struct id_record *)lhs)->uid) == 0;
 }
 
 
@@ -36,7 +35,7 @@ struct index_lsh init_lsh(const char * mapping_filename, const char * data_filen
 	
 	struct index_lsh _init_alloc = {
 		init_phash_table(mapping_filename),
-		init_lsh_allocator_pre_open(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE)),
+		init_allocator(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE), sizeof(struct id_record), LSH_BLOCK_SIZE),
 		hash_size,
 		dimensions
 	};
@@ -67,17 +66,17 @@ void lsh_add(struct index_lsh * index, struct id_record * uid, DATA_TYPE * value
 		value_size,
 	};
 
-	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
+	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response == BUCKET_DOES_NOT_EXIST) {
 		// no block in datastore to represent bucket.
-		size_t block_index = lsh_allocator_alloc(&index->storage, 1);
-		lsh_allocator_add(&index->storage, block_index, uid);
+		size_t block_index = smac_allocate(&index->storage, 1);
+		smac_add(&index->storage, block_index, uid);
 		hash_table_add(&index->mapper, hash_val, block_index);
 	} else {
 		// blocke in datastore to respresent bucket.
-		lsh_allocator_add(&index->storage, get_value, uid);
+		smac_add(&index->storage, get_value, uid);
 	}
 }
 
@@ -93,14 +92,14 @@ size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, s
 		value_size,
 	};
 
-	
-	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
+
+	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response == BUCKET_DOES_NOT_EXIST) {
 		return 0;
 	} else {
-		return lsh_allocator_get(&index->storage, get_value, max_buffer_size, result_buffer);
+		return smac_get(&index->storage, get_value, max_buffer_size, 0, result_buffer);
 	}
 }
 
@@ -109,7 +108,8 @@ void lsh_delete(struct index_lsh * index, struct id_record * id_to_delete) {
 	for (size_t bucket = 0; bucket < index->mapper.allocated; bucket ++) {
 		if (buckets(&index->mapper)[bucket].status == BUCKET_OCCUPIED) {
 			int64_t value = buckets(&index->mapper)[bucket].value;
-			lsh_allocator_delete(&index->storage, value, id_to_delete);
+//			lsh_allocator_delete(&index->storage, value, id_to_delete);
+			smac_delete(&index->storage, value, id_to_delete, lsh_required_equal);
 			// TODO: - CHECK IF BUCKET SIZE == 0 and DELETE REFERENCE. 
 		}
 	}
@@ -128,11 +128,12 @@ void lsh_quick_delete(struct index_lsh * index, struct id_record * id_to_delete,
 	};
 
 	
-	size_t hash_val = hash((DATA_TYPE *)index->storage.raw_data, planes_shape, value, value_shape);
+	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
 	size_t get_value;
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response != BUCKET_DOES_NOT_EXIST)  {
-		return lsh_allocator_delete(&index->storage, get_value, id_to_delete);
+//		return lsh_allocator_delete(&index->storage, get_value, id_to_delete);
+		return smac_delete(&index->storage, get_value, id_to_delete, lsh_required_equal);
 	}
 }
 
@@ -143,7 +144,7 @@ void lsh_delete_helper(struct index_lsh * index, char * id_to_delete ) {
 }
 
 void lsh_free(struct index_lsh * index) {
-	lsh_allocator_free(&index->storage);
+	smac_free(&index->storage);
 	hash_table_free(&index->mapper);
 }
 
@@ -164,7 +165,8 @@ void debug_print(struct index_lsh * index) {
 			
 			hash_table_get(&index->mapper, i, &value);
 			
-			size_t res_size = lsh_allocator_get(&index->storage, value, max_buffer_size, buffer);
+//			size_t res_size = lsh_allocator_get(&index->storage, value, max_buffer_size, buffer);
+			size_t res_size = smac_get(&index->storage, value, max_buffer_size, 0, buffer);
 			printf("Hash: %i Bucket: %zu Size:%zu\n",i, value, res_size);
 			for (int c = 0; c < res_size; c++) {
 				printf("\t%s\n", buffer[c].uid);

@@ -20,13 +20,12 @@
 #include "../../smac-alloc/src/include/allocator.h"
 
 
-bool lsh_required_equal(struct id_record rhs, struct id_record lhs);
-
-TYPED_ALLOCATOR_DEF(lsh, struct id_record, 10);
+#define LSH_BLOCK_SIZE 10
+BLOCK_TYPE(struct id_record, lsh, LSH_BLOCK_SIZE)
 
 struct index_lsh {
 	struct hash_table mapper;
-	struct lsh_allocator storage;
+	struct smac_allocator storage;
 	size_t hash_size, dimensions;
 	
 };
