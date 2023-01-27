@@ -21,7 +21,7 @@
 
 
 #define LSH_BLOCK_SIZE 10
-BLOCK_TYPE(struct id_record, lsh, LSH_BLOCK_SIZE)
+
 
 struct index_lsh {
 	struct hash_table mapper;
