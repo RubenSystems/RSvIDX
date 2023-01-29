@@ -159,7 +159,7 @@ void debug_print(struct index_lsh * index) {
 	struct id_record buffer[max_buffer_size];
 	unsigned long size = 0;
 	
-	for (int i = 0; i < index->mapper.allocated; i ++) {
+	for (size_t i = 0; i < index->mapper.allocated; i ++) {
 		if (buckets(&index->mapper)[i].status == BUCKET_OCCUPIED) {
 			size_t value = 0;
 			
@@ -167,8 +167,8 @@ void debug_print(struct index_lsh * index) {
 			
 //			size_t res_size = lsh_allocator_get(&index->storage, value, max_buffer_size, buffer);
 			size_t res_size = smac_get(&index->storage, value, max_buffer_size, 0, buffer);
-			printf("Hash: %i Bucket: %zu Size:%zu\n",i, value, res_size);
-			for (int c = 0; c < res_size; c++) {
+			printf("Hash: %zu Bucket: %zu Size:%zu\n",i, value, res_size);
+			for (size_t c = 0; c < res_size; c++) {
 				printf("\t%s\n", buffer[c].uid);
 			}
 			size += res_size;

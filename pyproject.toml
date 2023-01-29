@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rsvidx"
+version = "0.1.0"
+description = "Vector indexer"
+readme = "README.md"
+license = { file = "LICENSE.md" }
+authors = [{ name = "Ruben Ticehurst James", email = "ruben@rubensystems.com" }]
+keywords = ["ml", "vector", "semantic search", "vector indexer", "similarity search"]
+
+[project.urls]
+Homepage = "https://github.com/RubenSystems/RSvIDX"
+
+[tool.bumpver]
+current_version = "2023.1001-alpha"
+version_pattern = "YYYY.BUILD[-TAG]"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
+"setup.py" = [
+    "{version}",
+    "{pep440_version}",
+]
+"README.md" = [
+    "{version}",
+    "{pep440_version}",
+]
+

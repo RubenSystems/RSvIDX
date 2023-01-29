@@ -1,0 +1,2 @@
+include src/include/*.h
+include smac-alloc/src/include/*.h
