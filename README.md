@@ -28,3 +28,53 @@
 ### Example:
 
 Try out https://apps.apple.com/gb/app/headlines-today/id1363257410 on the App Store for a semantic search example.
+
+
+# Installation
+(For Python3)
+
+```
+pip3 install rsvidx
+```
+
+
+# Usage
+(For Python3)
+
+***Create an index***
+```python3 
+import rsvidx
+file_name = "test.index"
+number_of_buckets = 8
+dimensions = 4
+index = rsvidx.Similarity(file_name, number_of_buckets, dimensions)
+```
+
+
+
+***Add item to index***
+```python3
+add_vector = [1,2,3,4]
+add_uid = "1234"
+index.add(add_vector, add_uid)
+```
+
+
+
+***Get items from index***
+This will get items that are similar to the get vector
+```python3
+get_vector = [1,2,3,4]
+results = index.get(get_vector)
+```
+
+
+
+***Remove items from index***
+```python3 
+remove_uid = "1234"
+index.remove(remove_uid)
+```
+
+
+
