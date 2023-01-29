@@ -42,6 +42,7 @@ pip3 install rsvidx
 (For Python3)
 
 ***Create an index***
+You can finetune number of buckets to your use case. Less buckets results in higher accuracy but more items to brute force search. Less buckets results in lower accuracy but fewer items to brute force search.
 ```python3 
 import rsvidx
 file_name = "test.index"
