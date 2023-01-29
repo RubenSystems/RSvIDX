@@ -1,9 +1,10 @@
 
 from ctypes import CDLL, c_int, c_uint, c_float, c_void_p, c_ulong, c_char_p, c_char, create_string_buffer, Structure
-import glob
+import os
 
-libfile = glob.glob('build/*/rsvidx/rsvidxlib*.so')[0]
-rsvidx = CDLL(libfile)
+# libfile = glob.glob('build/*/rsvidx/rsvidxlib*.so')[0]
+this_dir = os.path.abspath(os.path.dirname(__file__))
+rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
 
 class id_record(Structure):
     _fields_=[("uid", c_char_p)]
