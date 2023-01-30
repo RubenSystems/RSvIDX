@@ -17,7 +17,8 @@ int __seed_random() {
 	if (random_seeded) {
 		return 1;
 	}
-	srand((unsigned int)time(0));
+	srand((unsigned int)time(NULL));
+	random_seeded = true;
 	return 0;
 }
 
@@ -46,8 +47,10 @@ enum raw_dot_produt_result __raw_dot_product(DATA_TYPE * a, struct ndarray_shape
 }
 
 void generate_planes(DATA_TYPE * res, size_t size){
+	__seed_random();
 	for (unsigned int index = 0; index < size; index ++) {
-		res[index] = (2 *(float)rand() / RAND_MAX) - 1;
+		// Generate a number between -0.5 and +0.5 with a 6 after point precision
+		res[index] = ((rand() % 1000000) - 500000) / 1000000.0;
 	}
 }
 
@@ -61,8 +64,11 @@ HASH_SIZE hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE 
 	
 	HASH_SIZE hash = 0;
 	for (unsigned int i = 0; i < hash_shape.columns; i ++) {
+		printf("%f\t", raw_hash[i]);
+		
 		hash += raw_hash[i] > 0 ? (1 << i) : 0;
 	}
+	printf("\n");
 	free(raw_hash);
 	return hash;
 }
