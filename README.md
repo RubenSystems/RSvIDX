@@ -63,6 +63,7 @@ index.add(add_vector, add_uid)
 
 
 ***Get items from index***
+
 This will get items that are similar to the get vector
 ```python3
 get_vector = [1,2,3,4]
