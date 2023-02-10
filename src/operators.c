@@ -63,12 +63,9 @@ HASH_SIZE hash(DATA_TYPE * planes, struct ndarray_shape planes_shape, DATA_TYPE 
 	__raw_dot_product(a, a_shape, planes, planes_shape, raw_hash, hash_shape);
 	
 	HASH_SIZE hash = 0;
-	for (unsigned int i = 0; i < hash_shape.columns; i ++) {
-		printf("%f\t", raw_hash[i]);
-		
+	for (unsigned int i = 0; i < hash_shape.columns; i ++) {		
 		hash += raw_hash[i] > 0 ? (1 << i) : 0;
 	}
-	printf("\n");
 	free(raw_hash);
 	return hash;
 }

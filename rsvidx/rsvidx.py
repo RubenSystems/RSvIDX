@@ -1,10 +1,11 @@
 
-from ctypes import CDLL, c_int, c_uint, c_float, c_void_p, c_ulong, c_char_p, c_char, create_string_buffer, Structure
+from ctypes import *
 import os
 
 # libfile = glob.glob('build/*/rsvidx/rsvidxlib*.so')[0]
 this_dir = os.path.abspath(os.path.dirname(__file__))
-rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
+#rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
+rsvidx = CDLL("rsvidx_build.so")
 
 class id_record(Structure):
     _fields_=[("uid", c_char_p)]
@@ -24,27 +25,34 @@ rsvidx.lsh_get.restype = c_ulong
 rsvidx.lsh_delete_helper.argtypes = [c_void_p, c_char_p]
 rsvidx.lsh_delete_helper.restype = None
 
+
+rsvidx.lsh_get_uid_from_result.argtypes = [c_void_p, c_void_p, c_ulong, c_char_p]
+rsvidx.lsh_get_uid_from_result.restype = c_ulong
+
+rsvidx.lsh_get_vector_from_result.argtypes = [c_void_p, c_void_p, c_ulong, c_void_p]
+rsvidx.lsh_get_vector_from_result.restype = None
+
 id_size = 32
 
 class RandomAccessIDBuffer:
 	def __init__(self, buffer):
 		self.buffer = buffer
 
-	def __getitem__(self, index):
-		_idx = index * id_size
-		buffer_data = self.buffer.raw[_idx:_idx + id_size]
-		terminate = 32
-		for index, value in enumerate(buffer_data):
-			if value == 0:
-				terminate = index
-				break
-				
-		return buffer_data[:terminate].decode()
+	def get(self, idx, index: int):
+		global id_size
+		id_buffer = create_string_buffer(32)
+		id_size = rsvidx.lsh_get_uid_from_result(idx._idx, self.buffer, index, id_buffer)
+		
+		vector_buffer = (c_float * idx._dimensions)()
+		rsvidx.lsh_get_vector_from_result(idx._idx, self.buffer, index, vector_buffer)
+		
+		return id_buffer[:id_size].decode(), [x for x in vector_buffer]
 
 
 
 class Similarity:
 	def __init__(self, name: str, hash_size: int, dimensions: int):
+		self._dimensions = dimensions
 		self._idx = rsvidx.init_lsh_heap(bytes(f"{name}.map", "utf-8"), bytes(f"{name}.store", "utf-8"), hash_size, dimensions)
 		
 	def add(self, vector: [float], rec_id: str):
@@ -67,13 +75,11 @@ class Similarity:
 		
 		raidb = RandomAccessIDBuffer(buffer)
 
-		return [raidb[i] for i in range(result_size)]
+		return [raidb.get(self, i)  for i in range(result_size)]
 		
 	def remove(self, id: str):
 		rsvidx.lsh_delete_helper(self._idx, bytes(id, "utf-8"))
-	
-	def quick_remove(self, id: str, vector):
-		rsvidx.lsh_delete_helper(self._idx, bytes(id, "utf-8"), (c_float * len(vector))(*vector), len(vector))
 		
 	def __del__(self) :
 		rsvidx.lsh_heap_free(self._idx)
+

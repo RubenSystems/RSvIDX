@@ -23,6 +23,10 @@ static bool lsh_required_equal(void * rhs, void * lhs) {
  Concrete stuff
  */
 
+static size_t __lsh_jump_size(struct index_lsh * index){
+	return sizeof(struct id_record) + sizeof(DATA_TYPE) * index->dimensions;
+}
+
 struct index_lsh init_lsh(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions) {
 	int fd = _open_file(data_filename);
 	DATA_TYPE * projections = NULL;
@@ -35,7 +39,7 @@ struct index_lsh init_lsh(const char * mapping_filename, const char * data_filen
 	
 	struct index_lsh _init_alloc = {
 		init_phash_table(mapping_filename),
-		init_allocator(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE), sizeof(struct id_record), LSH_BLOCK_SIZE),
+		init_allocator(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE), sizeof(struct id_record) + (sizeof(DATA_TYPE) * dimensions), LSH_BLOCK_SIZE),
 		hash_size,
 		dimensions
 	};
@@ -53,8 +57,11 @@ struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * dat
 	return index;
 }
 
-void lsh_add(struct index_lsh * index, struct id_record * uid, DATA_TYPE * value, size_t value_size) {
-	
+void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * value, size_t value_size) {
+//	struct record * rec = init_record(_uid, value, value_size);
+	void * rec = malloc(sizeof(struct id_record) + sizeof(DATA_TYPE) * value_size);
+	memmove(rec, _uid->uid, ID_SIZE * sizeof(char));
+	memmove(rec + ID_SIZE * sizeof(char), value, value_size * sizeof(DATA_TYPE));
 	// Don't transpose its toooo slowwww
 	struct ndarray_shape planes_shape = {
 		index->dimensions,
@@ -72,16 +79,17 @@ void lsh_add(struct index_lsh * index, struct id_record * uid, DATA_TYPE * value
 	if (get_response == BUCKET_DOES_NOT_EXIST) {
 		// no block in datastore to represent bucket.
 		size_t block_index = smac_allocate(&index->storage, 1);
-		smac_add(&index->storage, block_index, uid);
+		smac_add(&index->storage, block_index, rec);
 		hash_table_add(&index->mapper, hash_val, block_index);
 	} else {
 		// blocke in datastore to respresent bucket.
-		smac_add(&index->storage, get_value, uid);
+		smac_add(&index->storage, get_value, rec);
 	}
+	free(rec);
 }
 
 
-size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, struct id_record * result_buffer) {
+size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, void * result_buffer) {
 	struct ndarray_shape planes_shape = {
 		index->dimensions,
 		index->hash_size,
@@ -91,7 +99,6 @@ size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, s
 		1,
 		value_size,
 	};
-
 
 	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
 	size_t get_value;
@@ -153,6 +160,23 @@ void lsh_heap_free(struct index_lsh * index) {
 	lsh_free(index);
 	free(index);
 }
+
+//Int because it is boxed at 32 bytes
+unsigned long lsh_get_uid_from_result(struct index_lsh * lsh, void * result, size_t index, char * uid) {
+	
+	size_t jump_size = __lsh_jump_size(lsh);
+	
+	memmove(uid, result + jump_size * index, sizeof(struct id_record));
+	return strnlen(result + jump_size * index, ID_SIZE);
+}
+
+void lsh_get_vector_from_result(struct index_lsh * lsh, void * result, size_t index, DATA_TYPE * vector) {
+	size_t jump_size = __lsh_jump_size(lsh);
+	
+	memmove(vector, result + jump_size * index + sizeof(struct id_record), sizeof(DATA_TYPE) * lsh->dimensions);
+}
+
+
 
 void debug_print(struct index_lsh * index) {
 	static int max_buffer_size = 200;

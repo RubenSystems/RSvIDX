@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 #include "config.h"
-#include "id_record.h"
+#include "record.h"
 #include "operators.h"
 #include "dynamic_array.h"
 #include "hash_table.h"
@@ -36,7 +36,7 @@ struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * dat
 
 void lsh_add(struct index_lsh *, struct id_record * uid, DATA_TYPE * value, size_t value_size);
 
-size_t lsh_get(struct index_lsh *, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, struct id_record * result_buffer);
+size_t lsh_get(struct index_lsh *, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, void * result_buffer);
 
 void lsh_delete(struct index_lsh *, struct id_record * id_to_delete);
 
@@ -47,6 +47,10 @@ void lsh_delete_helper(struct index_lsh * index, char * id_to_delete );
 void lsh_free(struct index_lsh *);
 
 void lsh_heap_free(struct index_lsh *);
+
+unsigned long lsh_get_uid_from_result(struct index_lsh * lsh, void * result, size_t index, char * uid);
+
+void lsh_get_vector_from_result(struct index_lsh * lsh, void * result, size_t index, DATA_TYPE * vector);
 
 void debug_print(struct index_lsh *);
 
