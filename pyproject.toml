@@ -29,9 +29,9 @@ push = true
     'version = "{version}"'
 ]
 "setup.py" = [
-    'version = "{version}"'
+    "version = '{version}'"
 ]
 "rsvidx/__init__.py" = [
-    "{version}"
+    '__version__ = "{version}"'
 ]
 
