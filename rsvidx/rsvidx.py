@@ -4,7 +4,17 @@ import os
 
 # libfile = glob.glob('build/*/rsvidx/rsvidxlib*.so')[0]
 this_dir = os.path.abspath(os.path.dirname(__file__))
+
+
+"""
+	= UNCOMMENT IF LIVE =
+"""
 rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
+
+
+"""
+	= UNCOMMENT IF TESTING =
+"""
 #rsvidx = CDLL("rsvidx_build.so")
 
 class id_record(Structure):
@@ -33,6 +43,7 @@ rsvidx.lsh_get_vector_from_result.argtypes = [c_void_p, c_void_p, c_ulong, c_voi
 rsvidx.lsh_get_vector_from_result.restype = None
 
 id_size = 32
+float_size = sizeof(c_float)
 
 class RandomAccessIDBuffer:
 	def __init__(self, buffer):
@@ -64,7 +75,8 @@ class Similarity:
 		)
 	
 	def get(self, vector: [float], limit: int = 100):
-		buffer = create_string_buffer(id_size * limit)
+		buffer = create_string_buffer((id_size + (float_size * self._dimensions)) * limit)
+		result_size = 0
 		result_size = rsvidx.lsh_get(
 			self._idx,
 			(c_float * len(vector))(*vector),
@@ -72,14 +84,12 @@ class Similarity:
 			limit,
 			buffer
 		)
-		
-		raidb = RandomAccessIDBuffer(buffer)
 
-		return [raidb.get(self, i)  for i in range(result_size)]
+		raidb = RandomAccessIDBuffer(buffer)
+		return [raidb.get(self, i) for i in range(result_size)]
 		
 	def remove(self, id: str):
 		rsvidx.lsh_delete_helper(self._idx, bytes(id, "utf-8"))
 		
 	def __del__(self) :
 		rsvidx.lsh_heap_free(self._idx)
-

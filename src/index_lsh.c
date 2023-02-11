@@ -180,8 +180,9 @@ void lsh_get_vector_from_result(struct index_lsh * lsh, void * result, size_t in
 
 void debug_print(struct index_lsh * index) {
 	static int max_buffer_size = 200;
-	struct id_record buffer[max_buffer_size];
+	void * buffer = malloc(max_buffer_size * (sizeof(struct id_record) + sizeof(DATA_TYPE) * index->dimensions));
 	unsigned long size = 0;
+	char id[ID_SIZE];
 	
 	for (size_t i = 0; i < index->mapper.allocated; i ++) {
 		if (buckets(&index->mapper)[i].status == BUCKET_OCCUPIED) {
@@ -193,12 +194,15 @@ void debug_print(struct index_lsh * index) {
 			size_t res_size = smac_get(&index->storage, value, max_buffer_size, 0, buffer);
 			printf("Hash: %zu Bucket: %zu Size:%zu\n",i, value, res_size);
 			for (size_t c = 0; c < res_size; c++) {
-				printf("\t%s\n", buffer[c].uid);
+				
+				lsh_get_uid_from_result(index, buffer, c, id);
+				printf("\t%s\n", id);
 			}
 			size += res_size;
 		}
 	}
 	printf("TOTAL_RECORDS: %lu \n", size);
+	free(buffer);
 }
 
 // shrinkFLATION Shrinking to a format from the latent space of autoencoder transformers to an intermediate optimised ndimensional vector
