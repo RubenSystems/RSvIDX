@@ -4,8 +4,8 @@ import os
 
 # libfile = glob.glob('build/*/rsvidx/rsvidxlib*.so')[0]
 this_dir = os.path.abspath(os.path.dirname(__file__))
-#rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
-rsvidx = CDLL("rsvidx_build.so")
+rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
+#rsvidx = CDLL("rsvidx_build.so")
 
 class id_record(Structure):
     _fields_=[("uid", c_char_p)]
