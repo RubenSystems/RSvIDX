@@ -31,7 +31,7 @@ c_module = CTypesExtension(
 
 setup(
 	name='rsvidx',
-	version='0.2.5',    
+	version='0.2.6',    
 	description='RubenSystems Vector Indexer. Python3 edition.',
 	url='https://github.com/RubenSystems/RSvIDX',
 	author='RubenSystems. Ruben Ticehurst-James.',
