@@ -38,10 +38,11 @@ struct index_lsh init_lsh(const char * mapping_filename, const char * data_filen
 	}
 	
 	struct index_lsh _init_alloc = {
-		init_phash_table(mapping_filename),
-		init_allocator(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE), sizeof(struct id_record) + (sizeof(DATA_TYPE) * dimensions), LSH_BLOCK_SIZE),
-		hash_size,
-		dimensions
+		.mapper = init_phash_table(mapping_filename),
+		.storage = init_allocator(fd, projections, hash_size * dimensions * sizeof(DATA_TYPE), sizeof(struct id_record) + (sizeof(DATA_TYPE) * dimensions), LSH_BLOCK_SIZE),
+		.hash_size = hash_size,
+		.dimensions = dimensions,
+		.mutex = PTHREAD_MUTEX_INITIALIZER
 	};
 	
 	if (projections != NULL) {
@@ -58,7 +59,6 @@ struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * dat
 }
 
 void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * value, size_t value_size) {
-//	struct record * rec = init_record(_uid, value, value_size);
 	void * rec = malloc(sizeof(struct id_record) + sizeof(DATA_TYPE) * value_size);
 	memmove(rec, _uid->uid, ID_SIZE * sizeof(char));
 	memmove(rec + ID_SIZE * sizeof(char), value, value_size * sizeof(DATA_TYPE));
@@ -75,6 +75,7 @@ void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * valu
 
 	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
 	size_t get_value;
+	pthread_mutex_lock(&index->mutex);
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response == BUCKET_DOES_NOT_EXIST) {
 		// no block in datastore to represent bucket.
@@ -85,6 +86,7 @@ void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * valu
 		// blocke in datastore to respresent bucket.
 		smac_add(&index->storage, get_value, rec);
 	}
+	pthread_mutex_unlock(&index->mutex);
 	free(rec);
 }
 
@@ -102,46 +104,26 @@ size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, s
 
 	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
 	size_t get_value;
+	pthread_mutex_lock(&index->mutex);
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
-	if (get_response == BUCKET_DOES_NOT_EXIST) {
-		return 0;
-	} else {
-		return smac_get(&index->storage, get_value, max_buffer_size, 0, result_buffer);
+	size_t res_value = 0;
+	if (get_response != BUCKET_DOES_NOT_EXIST) {
+		res_value = smac_get(&index->storage, get_value, max_buffer_size, 0, result_buffer);
 	}
+	pthread_mutex_unlock(&index->mutex);
+	return res_value;
 }
 
 void lsh_delete(struct index_lsh * index, struct id_record * id_to_delete) {
-	
+	pthread_mutex_lock(&index->mutex);
 	for (size_t bucket = 0; bucket < index->mapper.allocated; bucket ++) {
 		if (buckets(&index->mapper)[bucket].status == BUCKET_OCCUPIED) {
 			int64_t value = buckets(&index->mapper)[bucket].value;
-//			lsh_allocator_delete(&index->storage, value, id_to_delete);
 			smac_delete(&index->storage, value, id_to_delete, lsh_required_equal);
 			// TODO: - CHECK IF BUCKET SIZE == 0 and DELETE REFERENCE. 
 		}
 	}
-}
-
-void lsh_quick_delete(struct index_lsh * index, struct id_record * id_to_delete, DATA_TYPE * value, size_t value_size) {
-	
-	struct ndarray_shape planes_shape = {
-		index->dimensions,
-		index->hash_size,
-	};
-	
-	struct ndarray_shape value_shape = {
-		1,
-		value_size,
-	};
-
-	
-	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
-	size_t get_value;
-	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
-	if (get_response != BUCKET_DOES_NOT_EXIST)  {
-//		return lsh_allocator_delete(&index->storage, get_value, id_to_delete);
-		return smac_delete(&index->storage, get_value, id_to_delete, lsh_required_equal);
-	}
+	pthread_mutex_unlock(&index->mutex);
 }
 
 void lsh_delete_helper(struct index_lsh * index, char * id_to_delete ) {

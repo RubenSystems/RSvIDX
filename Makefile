@@ -2,7 +2,7 @@ LDFLAGS = -shared -L./smac-alloc
 TARGET = rsvidx_build.so
 CSOURCES = $(shell echo src/*.c)
 SMAC_SOURCES = $(shell echo smac-alloc/src/*.c)
-FLAGS = -O3 -I./src/include -fPIC
+FLAGS = -O3 -I./src/include -fPIC -pthread
 
 OBJECTS = $(CSOURCES:.c=_c.o)
 SMAC_OBJECTS = $(SMAC_SOURCES:.c=_c.o)

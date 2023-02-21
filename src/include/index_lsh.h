@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #include "config.h"
 #include "record.h"
@@ -27,7 +28,7 @@ struct index_lsh {
 	struct hash_table mapper;
 	struct smac_allocator storage;
 	size_t hash_size, dimensions;
-	
+	pthread_mutex_t mutex;
 };
 
 struct index_lsh init_lsh(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions);
@@ -39,8 +40,6 @@ void lsh_add(struct index_lsh *, struct id_record * uid, DATA_TYPE * value, size
 size_t lsh_get(struct index_lsh *, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, void * result_buffer);
 
 void lsh_delete(struct index_lsh *, struct id_record * id_to_delete);
-
-void lsh_quick_delete(struct index_lsh * index, struct id_record * id_to_delete, DATA_TYPE * value, size_t value_size) ;
 
 void lsh_delete_helper(struct index_lsh * index, char * id_to_delete );
 
