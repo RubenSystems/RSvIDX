@@ -9,7 +9,7 @@ this_dir = os.path.abspath(os.path.dirname(__file__))
 """
 	= UNCOMMENT IF LIVE =
 """
- rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
+rsvidx = CDLL(os.path.join(this_dir, 'rsvidxlib.so'))
 
 
 """
@@ -26,10 +26,10 @@ rsvidx.init_lsh_heap.restype = c_void_p
 rsvidx.lsh_heap_free.argtypes = [c_void_p]
 rsvidx.lsh_heap_free.restype = c_void_p
 
-rsvidx.lsh_add.argtypes = [c_void_p, c_char_p, c_void_p, c_ulong]
+rsvidx.lsh_add.argtypes = [c_void_p, c_char_p, c_void_p]
 rsvidx.lsh_add.restype = None
 
-rsvidx.lsh_get.argtypes = [c_void_p, c_void_p, c_ulong, c_ulong, c_void_p]
+rsvidx.lsh_get.argtypes = [c_void_p, c_void_p, c_ulong, c_void_p]
 rsvidx.lsh_get.restype = c_ulong
 
 rsvidx.lsh_delete_helper.argtypes = [c_void_p, c_char_p]
@@ -68,17 +68,16 @@ class Similarity:
 	def add(self, vector: [float], rec_id: str):
 		rsvidx.lsh_add(
 			self._idx,
-			bytes(rec_id, "utf-8"),
+			bytes(rec_id[:31], "utf-8"),
 			(c_float * len(vector))(*vector),
-			len(vector),
 		)
 	
 	def get(self, vector: [float], limit: int = 100):
-		buffer = create_string_buffer(id_size * limit)
+		buffer_size = (id_size + (sizeof(c_float) * self._dimensions)) * limit
+		buffer = create_string_buffer(buffer_size)
 		result_size = rsvidx.lsh_get(
 			self._idx,
 			(c_float * len(vector))(*vector),
-			len(vector),
 			limit,
 			buffer
 		)
@@ -92,8 +91,3 @@ class Similarity:
 		
 	def __del__(self) :
 		rsvidx.lsh_heap_free(self._idx)
-
-
-
-
-x = Similarity()

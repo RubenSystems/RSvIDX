@@ -42,7 +42,6 @@ static void _add_no_resize(struct hash_table * table, size_t key, size_t value) 
 	while (true) {
 		if (buckets(table)[index].status == BUCKET_BRIDGE ||
 			buckets(table)[index].status == BUCKET_EMPTY) {
-			
 			struct hash_bucket _new_bucket = {
 				.status = BUCKET_OCCUPIED,
 				.key = key,

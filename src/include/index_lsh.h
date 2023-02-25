@@ -35,9 +35,9 @@ struct index_lsh init_lsh(const char * mapping_filename, const char * data_filen
 
 struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * data_filename, size_t hash_size, size_t dimensions);
 
-void lsh_add(struct index_lsh *, struct id_record * uid, DATA_TYPE * value, size_t value_size);
+void lsh_add(struct index_lsh *, struct id_record * uid, DATA_TYPE * value);
 
-size_t lsh_get(struct index_lsh *, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, void * result_buffer);
+size_t lsh_get(struct index_lsh *, DATA_TYPE * value, size_t max_buffer_size, void * result_buffer);
 
 void lsh_delete(struct index_lsh *, struct id_record * id_to_delete);
 

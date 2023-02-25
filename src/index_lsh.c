@@ -58,10 +58,10 @@ struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * dat
 	return index;
 }
 
-void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * value, size_t value_size) {
-	void * rec = malloc(sizeof(struct id_record) + sizeof(DATA_TYPE) * value_size);
-	memmove(rec, _uid->uid, ID_SIZE * sizeof(char));
-	memmove(rec + ID_SIZE * sizeof(char), value, value_size * sizeof(DATA_TYPE));
+void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * value) {
+	void * rec = malloc(sizeof(struct id_record) + (sizeof(DATA_TYPE) * index->dimensions));
+	memmove(rec, _uid, sizeof(struct id_record));
+	memmove(rec + sizeof(struct id_record), value, index->dimensions * sizeof(DATA_TYPE));
 	// Don't transpose its toooo slowwww
 	struct ndarray_shape planes_shape = {
 		index->dimensions,
@@ -70,7 +70,7 @@ void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * valu
 	
 	struct ndarray_shape value_shape = {
 		1,
-		value_size,
+		index->dimensions,
 	};
 
 	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
@@ -78,6 +78,7 @@ void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * valu
 	pthread_mutex_lock(&index->mutex);
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
 	if (get_response == BUCKET_DOES_NOT_EXIST) {
+		
 		// no block in datastore to represent bucket.
 		size_t block_index = smac_allocate(&index->storage, 1);
 		smac_add(&index->storage, block_index, rec);
@@ -91,7 +92,7 @@ void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * valu
 }
 
 
-size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, size_t max_buffer_size, void * result_buffer) {
+size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t max_buffer_size, void * result_buffer) {
 	struct ndarray_shape planes_shape = {
 		index->dimensions,
 		index->hash_size,
@@ -99,7 +100,7 @@ size_t lsh_get(struct index_lsh * index, DATA_TYPE * value, size_t value_size, s
 	
 	struct ndarray_shape value_shape = {
 		1,
-		value_size,
+		index->dimensions,
 	};
 
 	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
@@ -168,13 +169,12 @@ void debug_print(struct index_lsh * index) {
 	
 	for (size_t i = 0; i < index->mapper.allocated; i ++) {
 		if (buckets(&index->mapper)[i].status == BUCKET_OCCUPIED) {
-			size_t value = 0;
-			
-			hash_table_get(&index->mapper, i, &value);
+//		if (true) {
+			size_t value = buckets(&index->mapper)[i].value;
 			
 //			size_t res_size = lsh_allocator_get(&index->storage, value, max_buffer_size, buffer);
 			size_t res_size = smac_get(&index->storage, value, max_buffer_size, 0, buffer);
-			printf("Hash: %zu Bucket: %zu Size:%zu\n",i, value, res_size);
+			printf("Hash: %zu Bucket: %zu Size:%zu Status: %i\n",i, value, res_size, buckets(&index->mapper)[i].status);
 			for (size_t c = 0; c < res_size; c++) {
 				
 				lsh_get_uid_from_result(index, buffer, c, id);

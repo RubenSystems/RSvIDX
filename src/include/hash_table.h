@@ -26,8 +26,8 @@ enum bucket_flag {
 };
 
 enum bucket_operation_response {
-	BUCKET_EXISTS,
-	BUCKET_DOES_NOT_EXIST
+	BUCKET_EXISTS = 10,
+	BUCKET_DOES_NOT_EXIST = 11
 };
 
 // TODO: - Don't specalise size_t size_t
