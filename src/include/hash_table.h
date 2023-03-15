@@ -38,7 +38,7 @@ struct hash_bucket {
 };
 
 struct hash_table {
-	void * 	raw_data;
+	void * 					raw_data;
 	size_t 					allocated;
 	int 					_pfd;
 };

@@ -29,6 +29,9 @@ rsvidx.lsh_heap_free.restype = c_void_p
 rsvidx.lsh_add.argtypes = [c_void_p, c_char_p, c_void_p]
 rsvidx.lsh_add.restype = None
 
+rsvidx.lsh_custom_hash_add.argtypes = [c_void_p, c_char_p, c_void_p, c_size_t]
+rsvidx.lsh_custom_hash_add.restype = None
+
 rsvidx.lsh_get.argtypes = [c_void_p, c_void_p, c_ulong, c_void_p]
 rsvidx.lsh_get.restype = c_ulong
 
@@ -70,6 +73,14 @@ class Similarity:
 			self._idx,
 			bytes(rec_id[:31], "utf-8"),
 			(c_float * len(vector))(*vector),
+		)
+		
+	def add_custom_hash(self, vector: [float], rec_id: str, hash: int):
+		rsvidx.lsh_custom_hash_add(
+			self._idx,
+			bytes(rec_id[:31], "utf-8"),
+			(c_float * len(vector))(*vector),
+			hash
 		)
 	
 	def get(self, vector: [float], limit: int = 100):

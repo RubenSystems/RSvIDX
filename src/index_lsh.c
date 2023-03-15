@@ -59,21 +59,28 @@ struct index_lsh * init_lsh_heap(const char * mapping_filename, const char * dat
 }
 
 void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * value) {
-	void * rec = malloc(sizeof(struct id_record) + (sizeof(DATA_TYPE) * index->dimensions));
-	memmove(rec, _uid, sizeof(struct id_record));
-	memmove(rec + sizeof(struct id_record), value, index->dimensions * sizeof(DATA_TYPE));
-	// Don't transpose its toooo slowwww
+
 	struct ndarray_shape planes_shape = {
 		index->dimensions,
 		index->hash_size
 	};
-	
+
 	struct ndarray_shape value_shape = {
 		1,
 		index->dimensions,
 	};
 
 	size_t hash_val = hash((DATA_TYPE *)smac_pre_data(&index->storage), planes_shape, value, value_shape);
+	lsh_custom_hash_add(index, _uid, value, hash_val);
+
+}
+
+void lsh_custom_hash_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * value, size_t hash_val) {
+	void * rec = malloc(sizeof(struct id_record) + (sizeof(DATA_TYPE) * index->dimensions));
+	memmove(rec, _uid, sizeof(struct id_record));
+	memmove(rec + sizeof(struct id_record), value, index->dimensions * sizeof(DATA_TYPE));
+
+
 	size_t get_value;
 	pthread_mutex_lock(&index->mutex);
 	enum bucket_operation_response get_response = hash_table_get(&index->mapper, hash_val, &get_value);
@@ -89,6 +96,7 @@ void lsh_add(struct index_lsh * index, struct id_record * _uid, DATA_TYPE * valu
 	}
 	pthread_mutex_unlock(&index->mutex);
 	free(rec);
+	
 }
 
 
